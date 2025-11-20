@@ -1,71 +1,53 @@
-
-
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-/**
- * Write a description of JavaFX class UI here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-public class UI extends Application
-{
-    // We keep track of the count, and label displaying the count:
-    private int count = 0;
-    private Label myLabel = new Label("0");
+public class CodeTesterUI extends Application {
 
-    /**
-     * The start method is the main entry point for every JavaFX application. 
-     * It is called after the init() method has returned and after 
-     * the system is ready for the application to begin running.
-     *
-     * @param  stage the primary stage for this application.
-     */
     @Override
-    public void start(Stage stage)
-    {
-        // Create a Button or any control item
-        Button myButton = new Button("Count");
+    public void start(Stage primaryStage) {
+        // Main layout
+        BorderPane root = new BorderPane();
 
-        // Create a new grid pane
-        GridPane pane = new GridPane();
-        pane.setPadding(new Insets(10, 10, 10, 10));
-        pane.setMinSize(300, 300);
-        pane.setVgap(10);
-        pane.setHgap(10);
+        // Big bold title at top center
+        Text title = new Text("CODE TESTER");
+        title.setFont(Font.font("Arial", 36)); // Large professional font
+        root.setTop(title);
+        BorderPane.setAlignment(title, Pos.CENTER);
 
-        //set an action on the button using method reference
-        myButton.setOnAction(this::buttonClick);
+        // Top right info text
+        VBox infoBox = new VBox();
+        infoBox.setAlignment(Pos.TOP_RIGHT);
+        Text info1 = new Text("CS 2263");
+        Text info2 = new Text("Team 10");
+        Text info3 = new Text("().addAll(info1, info2, info3);
+                root.setRight(infoBox);
 
-        // Add the button and label into the pane
-        pane.add(myLabel, 1, 0);
-        pane.add(myButton, 0, 0);
+        // Vertical buttons
+        VBox buttonBox = new VBox(10); // 10px spacing
+        buttonBox.setAlignment(Pos.CENTER);
+        Button btnCreateTestCase = new Button("Create Test Case");
+        Button btnLoadTestCase = new Button("Load Test Case");
+        Button btnCreateTestSuite = new Button("Create Test Suite");
+        Button btnSaveTestCase = new Button("Save Test Case");
+        Button btnAddToSuite = new Button("Add Test Case to Test Suite");
+        buttonBox.getChildren().addAll(btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite, btnSaveTestCase, btnAddToSuite);
+        root.setCenter(buttonBox);
 
-        // JavaFX must have a Scene (window content) inside a Stage (window)
-        Scene scene = new Scene(pane, 300,100);
-        stage.setTitle("JavaFX Example");
-        stage.setScene(scene);
-
-        // Show the Stage (window)
-        stage.show();
+        // Scene setup
+        Scene scene = new Scene(root, 600, 400);
+        primaryStage.setTitle("Code Tester");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
-    /**
-     * This will be executed when the button is clicked
-     * It increments the count by 1
-     */
-    private void buttonClick(ActionEvent event)
-    {
-        // Counts number of button clicks and shows the result on a label
-        count = count + 1;
-        myLabel.setText(Integer.toString(count));
+    public static void main(String[] args) {
+        launch(args);
     }
 }

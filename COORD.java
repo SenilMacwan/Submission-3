@@ -7,9 +7,16 @@
  */
 public class COORD extends ListTC
 {
-    public void tc(String title, String input, String Exoutput)
+    public void NewTestCase(String title, int input, int Exoutput)
     {
-        createTC(title,input,Exoutput);
-        add()
+        TestCase myTC = new TestCase(title, input, Exoutput);
+        add(myTC);
+    }
+
+    public void LoadTestCase(String fileName)
+    {
+        TestCase myTC = new TestCase("",0,0);
+        myTC.initFromFile(fileName);
+        add(myTC);
     }
 }
