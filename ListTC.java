@@ -22,4 +22,16 @@ public class ListTC
         list.add(t);
     }
     
+    public TestCase search(String Title)
+    {
+         TestCase result =  new TestCase("",0,0);
+         for(TestCase t : list)  
+         {
+                if(t.title.equals(Title))
+                {   result = t; }
+         }
+         
+         return result;
+    }
+    
 }
