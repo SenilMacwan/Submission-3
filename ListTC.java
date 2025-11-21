@@ -1,45 +1,25 @@
-import java.io.File;
-import java.util.Scanner;
+import java.util.ArrayList;
+
 /**
- * a class for test cases.
+ * a list of test cases
  *
- * @author Senil Macwan
- * @version 1.1
+ * @author senil macwan
+ * @version 1.2
  */
-public class TestCase
+public class ListTC 
 {
-    public String title;
-    public int input;
-    public int Exoutput;
-
-    public TestCase(String title, int input, int Exoutput)
+    public static String name;
+    public static ArrayList<TestCase> list;
+    
+    public ListTC()
     {
-        this.title = title;
-        this.input = input;
-        this.Exoutput = Exoutput;
+        name = "temp";
+        ArrayList<TestCase> list = new ArrayList<>();
     }
-
-    public void initFromFile(String filename)
+    
+    public static void add(TestCase t)
     {
-        try
-        {
-            Scanner sc = new Scanner(new File(filename));
-
-            // Matches the sequence diagram: loading data after object is created
-            this.title = sc.nextLine();                 // read title
-            this.input = Integer.parseInt(sc.nextLine());      // read input
-            this.Exoutput = Integer.parseInt(sc.nextLine());   // read expected output
-
-            sc.close();
-        }
-        catch (Exception e)
-        {
-            System.out.println("Error loading test case from file: " + e.getMessage());
-        }
+        list.add(t);
     }
-
-    public static void main(String[] Args)
-    {
-
-    }
+    
 }
