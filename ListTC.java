@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * a list of test cases
+ * a list of test cases, ListTC.java
  *
  * @author senil macwan
  * @version 1.2
@@ -21,17 +21,18 @@ public class ListTC
     {
         list.add(t);
     }
-    
-    public TestCase search(String Title)
+
+    public static TestCase search(String title)
     {
-         TestCase result =  new TestCase("",0,0);
-         for(TestCase t : list)  
-         {
-                if(t.title.equals(Title))
-                {   result = t; }
-         }
-         
-         return result;
+        if (list == null) return null;
+
+        for (TestCase t : list)
+        {
+            if (t.title.equals(title))
+            {
+                return t;
+            }
+        }
+        return null;
     }
-    
 }
