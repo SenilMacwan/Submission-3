@@ -6,7 +6,7 @@
  */
 public class COORD extends ListTC
 {
-    // ⭐ ADDED — list of test suites (for your part)
+    // ADDED — list of test suites (for your part)
     public ListOfTestSuites listTS = new ListOfTestSuites();
 
     public void NewTestCase(String title, int input, int Exoutput)
@@ -22,7 +22,7 @@ public class COORD extends ListTC
         add(myTC);
     }
 
-    // ⭐ ADDED — Create Test Suite (matches diagram)
+    // ADDED — Create Test Suite (matches diagram)
     public void NewTestSuite(String name)
     {
         TestSuite ts = new TestSuite(name);
@@ -30,7 +30,7 @@ public class COORD extends ListTC
         System.out.println("Created Test Suite: " + name);
     }
 
-    // ⭐ ADDED — Add Test Case to Suite (matches diagram)
+    // ADDED — Add Test Case to Suite (matches diagram)
     public void AddTestCaseToSuite(String suiteName, String title)
     {
         // Step 1: Search suite by name
