@@ -2,14 +2,18 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class CodeTesterUI extends Application 
+import java.util.Optional;
+
+public class CodeTesterUI extends Application
 {
+    COORD coord = new COORD();  // MASTER CONTROLLER
 
     @Override
     public void start(Stage primaryStage)
@@ -17,22 +21,23 @@ public class CodeTesterUI extends Application
         // Main layout
         BorderPane root = new BorderPane();
 
-        // Big bold title at top center
+        // Title
         Text title = new Text("CODE TESTER");
         title.setFont(Font.font("Arial", 36));
         root.setTop(title);
         BorderPane.setAlignment(title, Pos.CENTER);
 
-        // Top right info text
+        // Top right info
         VBox infoBox = new VBox();
         infoBox.setAlignment(Pos.TOP_RIGHT);
-        Text info1 = new Text("CS 2263");
-        Text info2 = new Text("Team 10");
-        Text info3 = new Text("Group Project");
-        infoBox.getChildren().addAll(info1, info2, info3);
+        infoBox.getChildren().addAll(
+                new Text("CS 2263"),
+                new Text("Team 10"),
+                new Text("Group Project")
+        );
         root.setRight(infoBox);
 
-        // Vertical buttons
+        // Buttons
         VBox buttonBox = new VBox(10);
         buttonBox.setAlignment(Pos.CENTER);
 
@@ -41,10 +46,9 @@ public class CodeTesterUI extends Application
         Button btnCreateTestSuite = new Button("Create Test Suite");
         Button btnSaveTestCase = new Button("Save Test Case");
         Button btnAddToSuite = new Button("Add Test Case to Test Suite");
-        Button btnRunSuite = new Button("Run Test Suite"); // Should eventually run ExecuteTestSuite.java
+        Button btnRunSuite = new Button("Run Test Suite");
 
-        buttonBox.getChildren().addAll
-            (
+        buttonBox.getChildren().addAll(
                 btnCreateTestCase,
                 btnLoadTestCase,
                 btnCreateTestSuite,
@@ -52,8 +56,95 @@ public class CodeTesterUI extends Application
                 btnAddToSuite,
                 btnRunSuite
         );
-
         root.setCenter(buttonBox);
+
+
+        // =====================================================
+        // BUTTON LOGIC
+        // =====================================================
+
+        // Create Test Case
+        btnCreateTestCase.setOnAction(e -> {
+            TextInputDialog d = new TextInputDialog();
+            d.setHeaderText("Enter test case in format: title,input,expected");
+            Optional<String> result = d.showAndWait();
+
+            result.ifPresent(data -> {
+                try {
+                    String[] parts = data.split(",");
+                    coord.NewTestCase(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+                    System.out.println("Created Test Case: " + parts[0]);
+                } catch (Exception ex) {
+                    System.out.println("Invalid format.");
+                }
+            });
+        });
+
+        // Load Test Case from file
+        btnLoadTestCase.setOnAction(e -> {
+            TextInputDialog d = new TextInputDialog();
+            d.setHeaderText("Enter filename to load:");
+            Optional<String> result = d.showAndWait();
+
+            result.ifPresent(filename -> coord.LoadTestCase(filename));
+        });
+
+        // Create Test Suite
+        btnCreateTestSuite.setOnAction(e -> {
+            TextInputDialog d = new TextInputDialog();
+            d.setHeaderText("Enter Test Suite Name:");
+            Optional<String> result = d.showAndWait();
+
+            result.ifPresent(name -> coord.NewTestSuite(name));
+        });
+
+        // Save Test Case
+        btnSaveTestCase.setOnAction(e -> {
+            TextInputDialog d = new TextInputDialog();
+            d.setHeaderText("Enter test case title to save:");
+            Optional<String> result = d.showAndWait();
+
+            result.ifPresent(title -> {
+                TestCase tc = ListTC.search(title);
+                if (tc == null) {
+                    System.out.println("Test Case not found.");
+                    return;
+                }
+
+                TextInputDialog d2 = new TextInputDialog();
+                d2.setHeaderText("Enter filename to save into:");
+                Optional<String> f = d2.showAndWait();
+
+                f.ifPresent(file -> tc.save(file));
+            });
+        });
+
+        // Add Test Case to Suite
+        btnAddToSuite.setOnAction(e -> {
+            TextInputDialog d = new TextInputDialog();
+            d.setHeaderText("Enter Suite Name:");
+            Optional<String> s = d.showAndWait();
+
+            if (!s.isPresent()) return;
+
+            TextInputDialog d2 = new TextInputDialog();
+            d2.setHeaderText("Enter Test Case Title:");
+            Optional<String> t = d2.showAndWait();
+
+            if (!t.isPresent()) return;
+
+            coord.AddTestCaseToSuite(s.get(), t.get());
+        });
+
+        // Run Test Suite
+        btnRunSuite.setOnAction(e -> {
+            TextInputDialog d = new TextInputDialog();
+            d.setHeaderText("Enter Suite Name to Execute:");
+            Optional<String> result = d.showAndWait();
+
+            result.ifPresent(name -> coord.ExecuteSuite(name));
+        });
+
 
         // Scene setup
         Scene scene = new Scene(root, 600, 400);
@@ -67,4 +158,3 @@ public class CodeTesterUI extends Application
         launch(args);
     }
 }
-
