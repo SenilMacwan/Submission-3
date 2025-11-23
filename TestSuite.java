@@ -1,10 +1,9 @@
-/**************************************************
-* This program demonstrate test suite by following
-* test case.
+/*********************************************************
+* Defines the TestSuite class grouping related test cases.
 *
 *@author Abdullah Tauqir
 *@Project CS-2043/Group 10
-***************************************************/ 
+**********************************************************/ 
 
 import java.util.ArrayList;
 
