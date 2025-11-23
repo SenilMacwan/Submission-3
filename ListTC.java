@@ -12,10 +12,11 @@ public class ListTC
     public static ArrayList<TestCase> list;
     
     public ListTC()
-    {
-        name = "temp";
-        ArrayList<TestCase> list = new ArrayList<>();
-    }
+{
+    name = "temp";
+    list = new ArrayList<>();
+}
+
     
     public static void add(TestCase t)
     {
