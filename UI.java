@@ -30,7 +30,8 @@ public class CodeTesterUI extends Application {
                 root.setRight(infoBox);
 
         // Vertical buttons
-        VBox buttonBox = new VBox(10); // 10px spacing
+        // 10px spacing
+        VBox buttonBox = new VBox(10); 
         buttonBox.setAlignment(Pos.CENTER);
         Button btnCreateTestCase = new Button("Create Test Case");
         Button btnLoadTestCase = new Button("Load Test Case");
@@ -47,7 +48,10 @@ public class CodeTesterUI extends Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args) {
+    //main method 
+    public static void main(String[] args)
+    {
         launch(args);
     }
+
 }
