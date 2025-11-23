@@ -1,9 +1,9 @@
-/**
- * Write a description of class COORD here.
+/******************************************************************
+ * Class to represent and manage coordinates used in the project
  *
- * @author (your name)
- * @version (a version number or a date)
- */
+ * CS2043 / Group 10
+ * 
+ ******************************************************************/
 public class COORD extends ListTC
 {
     // ADDED — list of test suites (for your part)
