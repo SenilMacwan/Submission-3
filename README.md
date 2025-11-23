@@ -4,7 +4,6 @@ Author: Abdullah Tauqir, Sanjida Shakhayet, Senil Macwan, Ayman Malik
 
 Group: 10
 
-Date: 2025-11-23
 
 ## Project Overview
 Brief description of the project, its purpose, and functionality.
