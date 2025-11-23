@@ -8,17 +8,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class CodeTesterUI extends Application {
+public class CodeTesterUI extends Application 
+{
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage)
+    {
         // Main layout
-        // BorderPane allows placing nodes at: top, center, left, right, bottom.
         BorderPane root = new BorderPane();
 
         // Big bold title at top center
         Text title = new Text("CODE TESTER");
-        title.setFont(Font.font("Arial", 36)); // Large professional font
+        title.setFont(Font.font("Arial", 36));
         root.setTop(title);
         BorderPane.setAlignment(title, Pos.CENTER);
 
@@ -27,37 +28,43 @@ public class CodeTesterUI extends Application {
         infoBox.setAlignment(Pos.TOP_RIGHT);
         Text info1 = new Text("CS 2263");
         Text info2 = new Text("Team 10");
-        Text info3 = new Text("().addAll(info1, info2, info3);
-                root.setRight(infoBox);
+        Text info3 = new Text("Group Project");
+        infoBox.getChildren().addAll(info1, info2, info3);
+        root.setRight(infoBox);
 
         // Vertical buttons
-        // 10px spacing
-        VBox buttonBox = new VBox(10); 
+        VBox buttonBox = new VBox(10);
         buttonBox.setAlignment(Pos.CENTER);
-        // Create all the buttons needed for the UI
+
         Button btnCreateTestCase = new Button("Create Test Case");
         Button btnLoadTestCase = new Button("Load Test Case");
         Button btnCreateTestSuite = new Button("Create Test Suite");
         Button btnSaveTestCase = new Button("Save Test Case");
         Button btnAddToSuite = new Button("Add Test Case to Test Suite");
-        buttonBox.getChildren().addAll(btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite, btnSaveTestCase, btnAddToSuite);
-        // Place the vertical list of buttons in the center of the UI
+        Button btnRunSuite = new Button("Run Test Suite"); // Should eventually run ExecuteTestSuite.java
+
+        buttonBox.getChildren().addAll
+            (
+                btnCreateTestCase,
+                btnLoadTestCase,
+                btnCreateTestSuite,
+                btnSaveTestCase,
+                btnAddToSuite,
+                btnRunSuite
+        );
+
         root.setCenter(buttonBox);
 
         // Scene setup
-        // Create and set window size (600x400)
         Scene scene = new Scene(root, 600, 400);
-        // Prepare the Stage (window)
         primaryStage.setTitle("Code Tester");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    //main method 
     public static void main(String[] args)
     {
         launch(args);
     }
-
 }
 
