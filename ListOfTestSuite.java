@@ -1,4 +1,9 @@
 import java.util.ArrayList;
+/**************************************************************
+* Maintains a list of all test suites available in the project
+*
+* CS 2043 / Group 10
+**************************************************************/
 
 public class ListOfTestSuites 
 {
