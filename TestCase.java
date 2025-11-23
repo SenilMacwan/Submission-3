@@ -1,11 +1,11 @@
 import java.io.File;
 import java.util.Scanner;
-/**
- * a class for test cases.
+/******************************************************************
+ * Defines the TestCase class representing individual test cases.
  *
  * @author Senil Macwan 
  * @version 1.1
- */
+ ****************************************************************/
 public class TestCase
 {
      public String title;
