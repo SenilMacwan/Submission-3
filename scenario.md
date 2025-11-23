@@ -1,7 +1,7 @@
-/********************************************************************
-*  UI Scenario
+/************************************************************************
+*  Detailed description of use cases, system scenarios, and requirements.
 *
-*@author: Sanjida Shakhayet
+* @author: Sanjida Shakhayet
 * CS 2043 / Group 10
 ********************************************************************/
 
