@@ -1,7 +1,9 @@
 # Submission 3 - Software Engineering - CS2043
 
 Author: Abdullah Tauqir, Sanjida Shakhayet, Senil Macwan, Ayman Malik
+
 Group: 10
+
 Date: 2025-11-23
 
 ## Project Overview
