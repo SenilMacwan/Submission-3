@@ -8,8 +8,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.util.Optional;
+/*******************************************************
+*Handles the user interface for the application.
+*
+* CS 2043 / Group 10
+*******************************************************/
 
 public class CodeTesterUI extends Application
 {
@@ -158,3 +162,4 @@ public class CodeTesterUI extends Application
         launch(args);
     }
 }
+
