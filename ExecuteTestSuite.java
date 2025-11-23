@@ -2,13 +2,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 
-/**************************************************
-* This program demonstrate execute test suite by following
-* test suite and test case which linked to UI.
+/***********************************************************
+* Handles the execution logic for running the test suites.
 *
 *@author Abdullah Tauqir
 *@Project CS-2043/Group 10
-***************************************************/
+***********************************************************/
 
 public class ExecuteTestSuite
 {
@@ -128,9 +127,7 @@ public class ExecuteTestSuite
     {
 
         try
-
         {
-
             String[] cmd = {"java", className, String.valueOf(input)};
 
             Process p = Runtime.getRuntime().exec(cmd, null, folder);
@@ -148,7 +145,6 @@ public class ExecuteTestSuite
         catch (Exception e)
 
         {
-
             System.out.println("Runtime error: " + e);
 
             return null;
