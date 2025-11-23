@@ -1,11 +1,10 @@
 import java.util.ArrayList;
-
-/**
- * a list of test cases, ListTC.java
+/******************************************************
+ * Manages the list of test cases for the application.
  *
  * @author senil macwan
  * @version 1.2
- */
+ ******************************************************/
 public class ListTC 
 {
     public static String name;
