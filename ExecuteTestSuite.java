@@ -123,6 +123,37 @@ public class ExecuteTestSuite
     }
 
     // run program using java className <input>
+    private String runProgram(File folder, String className, int input)
+
+    {
+
+        try
+
+        {
+
+            String[] cmd = {"java", className, String.valueOf(input)};
+
+            Process p = Runtime.getRuntime().exec(cmd, null, folder);
+ 
+            BufferedReader br = new BufferedReader(
+
+                    new InputStreamReader(p.getInputStream()));
+ 
+            String line = br.readLine();
+
+            return line;  // program prints 1-line output
+
+        }
+
+        catch (Exception e)
+
+        {
+
+            System.out.println("Runtime error: " + e);
+
+            return null;
+
+        }
     
     }
 }
