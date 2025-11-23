@@ -13,6 +13,7 @@ public class CodeTesterUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         // Main layout
+        // BorderPane allows placing nodes at: top, center, left, right, bottom.
         BorderPane root = new BorderPane();
 
         // Big bold title at top center
@@ -33,16 +34,20 @@ public class CodeTesterUI extends Application {
         // 10px spacing
         VBox buttonBox = new VBox(10); 
         buttonBox.setAlignment(Pos.CENTER);
+        // Create all the buttons needed for the UI
         Button btnCreateTestCase = new Button("Create Test Case");
         Button btnLoadTestCase = new Button("Load Test Case");
         Button btnCreateTestSuite = new Button("Create Test Suite");
         Button btnSaveTestCase = new Button("Save Test Case");
         Button btnAddToSuite = new Button("Add Test Case to Test Suite");
         buttonBox.getChildren().addAll(btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite, btnSaveTestCase, btnAddToSuite);
+        // Place the vertical list of buttons in the center of the UI
         root.setCenter(buttonBox);
 
         // Scene setup
+        // Create and set window size (600x400)
         Scene scene = new Scene(root, 600, 400);
+        // Prepare the Stage (window)
         primaryStage.setTitle("Code Tester");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -55,3 +60,4 @@ public class CodeTesterUI extends Application {
     }
 
 }
+
