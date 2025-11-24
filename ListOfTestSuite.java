@@ -7,21 +7,20 @@ import java.util.ArrayList;
 
 public class ListOfTestSuites 
 {
-
     private ArrayList<TestSuite> suites;
    // Constructor
     public ListOfTestSuites() 
-  {
+    {
         suites = new ArrayList<>();
     }
     //Adds a TestSuite to the collection
     public void add(TestSuite ts) 
-  {
+    {
         suites.add(ts);
     }
   // Searches the list for a TestSuite with the given name
     public TestSuite search(String name) 
-  {
+    {
         for (TestSuite t : suites) 
         {   // Compare suite names
             if (t.name.equals(name)) 
