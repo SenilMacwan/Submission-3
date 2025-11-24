@@ -72,7 +72,7 @@ public class CodeTesterUI extends Application
         // BUTTON LOGIC
         // =====================================================
 
-        // Create Test Case
+        // Creating test case from user input
         btnCreateTestCase.setOnAction(e -> 
         {
             TextInputDialog d = new TextInputDialog();
@@ -94,7 +94,7 @@ public class CodeTesterUI extends Application
             });
         });
 
-        // Load Test Case from file
+        // Loading test case from file which user inputs
         btnLoadTestCase.setOnAction(e -> 
         {
             TextInputDialog d = new TextInputDialog();
@@ -114,7 +114,7 @@ public class CodeTesterUI extends Application
             result.ifPresent(name -> coord.NewTestSuite(name));
         });
 
-        // Save Test Case
+        // Saving test case by title
         btnSaveTestCase.setOnAction(e -> 
         {
             TextInputDialog d = new TextInputDialog();
@@ -139,7 +139,7 @@ public class CodeTesterUI extends Application
             });
         });
 
-        // Add Test Case to Suite
+        // Method to add a test case by title in a test suite by name
         btnAddToSuite.setOnAction(e -> 
         {
             TextInputDialog d = new TextInputDialog();
@@ -157,7 +157,7 @@ public class CodeTesterUI extends Application
             coord.AddTestCaseToSuite(s.get(), t.get());
         });
 
-        // Run Test Suite
+        // Method to run test suite
         btnRunSuite.setOnAction(e -> 
         {
             TextInputDialog d = new TextInputDialog();
@@ -180,6 +180,7 @@ public class CodeTesterUI extends Application
         launch(args);
     }
 }
+
 
 
 
