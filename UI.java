@@ -67,7 +67,6 @@ public class CodeTesterUI extends Application
         );
         root.setCenter(buttonBox);
 
-
         // =====================================================
         // BUTTON LOGIC
         // =====================================================
@@ -180,10 +179,3 @@ public class CodeTesterUI extends Application
         launch(args);
     }
 }
-
-
-
-
-
-
-
