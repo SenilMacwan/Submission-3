@@ -1,37 +1,41 @@
 import java.util.ArrayList;
-/******************************************************
- * Manages the list of test cases for the application.
+import java.util.Iterator;
+
+/**
+ * a list of test cases
  *
- * @author senil macwan
- * @version 1.2
- ******************************************************/
-public class ListTC 
-{
-    public static String name;
-    public static ArrayList<TestCase> list;
-    
-    public ListTC()
-{
+ * @author senil
+ * @version 1.3
+ */
+public class ListTC implements Iterable<TestCase> {
+
+  private ArrayList<TestCase> list;  // instance list, not static
+  public String name;
+
+  public ListTC() {
     name = "temp";
-    list = new ArrayList<>();
-}
+    list = new ArrayList<>();  // initialize the internal ArrayList
+  }
 
-    public static void add(TestCase t)
-    {
-        list.add(t);
+  // add a test case
+  public void add(TestCase t) {
+    if (t != null) {
+      list.add(t);
     }
+  }
 
-    public static TestCase search(String title)
-    {
-        if (list == null) return null;
-
-        for (TestCase t : list)
-        {
-            if (t.title.equals(title))
-            {
-                return t;
-            }
-        }
-        return null;
+  // search by title
+  public TestCase search(String Title) {
+    for (TestCase t : list) {
+      if (t.title.equals(Title)) {
+        return t;
+      }
     }
+    return null;  // return null if not found
+  }
+
+  @Override
+  public Iterator<TestCase> iterator() {
+    return list.iterator();
+  }
 }
