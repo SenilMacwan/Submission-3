@@ -36,7 +36,7 @@ public class CodeTesterUI extends Application
         infoBox.setAlignment(Pos.TOP_RIGHT);
         infoBox.getChildren().addAll
         (
-                new Text("CS 2263"),
+                new Text("CS 2043"),
                 new Text("Team 10"),
                 new Text("Group Project")
         );
@@ -177,5 +177,6 @@ public class CodeTesterUI extends Application
         launch(args);
     }
 }
+
 
 
