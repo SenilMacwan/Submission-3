@@ -7,18 +7,21 @@ import java.util.Scanner;
  * @version 1.1
  ****************************************************************/
 public class TestCase
-{
+{     
+     // Instance variables
      public String title;
      public int input;
      public int Exoutput;
-     
+
+     // Constructor method
      public TestCase(String title, int input, int Exoutput)
      {
             this.title = title;
             this.input = input;
             this.Exoutput = Exoutput;
      }
-     
+
+     // Method to read and load a test case title, input and expected output
      public void initFromFile(String filename)
      {
          try
@@ -26,7 +29,7 @@ public class TestCase
              Scanner sc = new Scanner(new File(filename));
  
              // Matches the sequence diagram: loading data after object is created
-             this.title = sc.nextLine();                 // read title
+             this.title = sc.nextLine();                        // read title
              this.input = Integer.parseInt(sc.nextLine());      // read input
              this.Exoutput = Integer.parseInt(sc.nextLine());   // read expected output
  
@@ -37,7 +40,8 @@ public class TestCase
              System.out.println("Error loading test case from file: " + e.getMessage());
          }
      }
-     
+
+     // Method to write and save the test case title, input and expected output
      public void save(String filename)
      {
          try
@@ -54,11 +58,5 @@ public class TestCase
          {
              System.out.println("Error saving test case to file: " + e.getMessage());
          }
-     }
-    
-     
-     public static void main(String[] Args)
-     {
-            
      }
 }
