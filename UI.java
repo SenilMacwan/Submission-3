@@ -34,7 +34,8 @@ public class CodeTesterUI extends Application
         // Top right info
         VBox infoBox = new VBox();
         infoBox.setAlignment(Pos.TOP_RIGHT);
-        infoBox.getChildren().addAll(
+        infoBox.getChildren().addAll
+        (
                 new Text("CS 2263"),
                 new Text("Team 10"),
                 new Text("Group Project")
@@ -52,7 +53,8 @@ public class CodeTesterUI extends Application
         Button btnAddToSuite = new Button("Add Test Case to Test Suite");
         Button btnRunSuite = new Button("Run Test Suite");
 
-        buttonBox.getChildren().addAll(
+        buttonBox.getChildren().addAll
+        (
                 btnCreateTestCase,
                 btnLoadTestCase,
                 btnCreateTestSuite,
@@ -68,24 +70,30 @@ public class CodeTesterUI extends Application
         // =====================================================
 
         // Create Test Case
-        btnCreateTestCase.setOnAction(e -> {
+        btnCreateTestCase.setOnAction(e -> 
+        {
             TextInputDialog d = new TextInputDialog();
             d.setHeaderText("Enter test case in format: title,input,expected");
             Optional<String> result = d.showAndWait();
 
-            result.ifPresent(data -> {
-                try {
+            result.ifPresent(data -> 
+            {
+                try 
+                {
                     String[] parts = data.split(",");
                     coord.NewTestCase(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
                     System.out.println("Created Test Case: " + parts[0]);
-                } catch (Exception ex) {
+                } 
+                catch (Exception ex) 
+                {
                     System.out.println("Invalid format.");
                 }
             });
         });
 
         // Load Test Case from file
-        btnLoadTestCase.setOnAction(e -> {
+        btnLoadTestCase.setOnAction(e -> 
+        {
             TextInputDialog d = new TextInputDialog();
             d.setHeaderText("Enter filename to load:");
             Optional<String> result = d.showAndWait();
@@ -94,7 +102,8 @@ public class CodeTesterUI extends Application
         });
 
         // Create Test Suite
-        btnCreateTestSuite.setOnAction(e -> {
+        btnCreateTestSuite.setOnAction(e -> 
+        {
             TextInputDialog d = new TextInputDialog();
             d.setHeaderText("Enter Test Suite Name:");
             Optional<String> result = d.showAndWait();
@@ -103,14 +112,18 @@ public class CodeTesterUI extends Application
         });
 
         // Save Test Case
-        btnSaveTestCase.setOnAction(e -> {
+        btnSaveTestCase.setOnAction(e -> 
+        {
             TextInputDialog d = new TextInputDialog();
             d.setHeaderText("Enter test case title to save:");
             Optional<String> result = d.showAndWait();
 
-            result.ifPresent(title -> {
+            result.ifPresent(title -> 
+            {
                 TestCase tc = ListTC.search(title);
-                if (tc == null) {
+                
+                if (tc == null) 
+                {
                     System.out.println("Test Case not found.");
                     return;
                 }
@@ -124,7 +137,8 @@ public class CodeTesterUI extends Application
         });
 
         // Add Test Case to Suite
-        btnAddToSuite.setOnAction(e -> {
+        btnAddToSuite.setOnAction(e -> 
+        {
             TextInputDialog d = new TextInputDialog();
             d.setHeaderText("Enter Suite Name:");
             Optional<String> s = d.showAndWait();
@@ -141,7 +155,8 @@ public class CodeTesterUI extends Application
         });
 
         // Run Test Suite
-        btnRunSuite.setOnAction(e -> {
+        btnRunSuite.setOnAction(e -> 
+        {
             TextInputDialog d = new TextInputDialog();
             d.setHeaderText("Enter Suite Name to Execute:");
             Optional<String> result = d.showAndWait();
@@ -162,4 +177,5 @@ public class CodeTesterUI extends Application
         launch(args);
     }
 }
+
 
