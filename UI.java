@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class CodeTesterUI extends Application
 {
-    COORD coord = new COORD();  // MASTER CONTROLLER
+   private COORD coord = new COORD();  // MASTER CONTROLLER
 
     @Override
     public void start(Stage primaryStage)
@@ -177,6 +177,7 @@ public class CodeTesterUI extends Application
         launch(args);
     }
 }
+
 
 
 
