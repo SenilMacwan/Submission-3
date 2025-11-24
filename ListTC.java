@@ -16,7 +16,6 @@ public class ListTC
     list = new ArrayList<>();
 }
 
-    
     public static void add(TestCase t)
     {
         list.add(t);
