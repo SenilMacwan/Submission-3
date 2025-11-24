@@ -17,21 +17,24 @@ import java.util.Optional;
 
 public class CodeTesterUI extends Application
 {
-   private COORD coord = new COORD();  // MASTER CONTROLLER
+   
+   // Master Controller to manage the test cases and test suites
+   private COORD coord = new COORD(); 
 
     @Override
+    // Creating the JavaFX User Interface
     public void start(Stage primaryStage)
     {
-        // Main layout
+        // BorderPane for the main layout
         BorderPane root = new BorderPane();
 
-        // Title
+        // Title in the top middle
         Text title = new Text("CODE TESTER");
         title.setFont(Font.font("Arial", 36));
         root.setTop(title);
         BorderPane.setAlignment(title, Pos.CENTER);
 
-        // Top right info
+        // VBox for group information in the top right
         VBox infoBox = new VBox();
         infoBox.setAlignment(Pos.TOP_RIGHT);
         infoBox.getChildren().addAll
@@ -42,7 +45,7 @@ public class CodeTesterUI extends Application
         );
         root.setRight(infoBox);
 
-        // Buttons
+        // VBox for buttons
         VBox buttonBox = new VBox(10);
         buttonBox.setAlignment(Pos.CENTER);
 
@@ -177,6 +180,7 @@ public class CodeTesterUI extends Application
         launch(args);
     }
 }
+
 
 
 
