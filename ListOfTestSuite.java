@@ -2,6 +2,7 @@ import java.util.ArrayList;
 /**************************************************************
 * Maintains a list of all test suites available in the project
 *
+* @author Abdullah Tauqir
 * CS 2043 / Group 10
 **************************************************************/
 
@@ -31,4 +32,15 @@ public class ListOfTestSuites
        // If no match found, return null
         return null;
     }
+
+    public int getCount()
+    {
+    return count;
+    }
+
+   public TestSuite getSuiteAt(int index) 
+    {
+    return suites[index];
+    }
+
 }
