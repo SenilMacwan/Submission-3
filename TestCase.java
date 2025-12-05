@@ -7,28 +7,33 @@ import java.util.Scanner;
  * @author Senil Macwan
  * @version 1.2
  */
-public class TestCase {
+public class TestCase 
+{
     public String title;
     public int input;       // changed from String to int
     public int Exoutput;    // changed from String to int
 
     // Constructor
-    public TestCase(String title, int input, int Exoutput) {
+    public TestCase(String title, int input, int Exoutput) 
+    {
         this.title = title;
         this.input = input;
         this.Exoutput = Exoutput;
     }
 
     // Load test case from file
-    public void initFromFile(String filename) {
+    public void initFromFile(String filename) 
+    {
         try {
             Scanner sc = new Scanner(new File(filename));
 
             this.title = sc.nextLine();          // read title
-            if (sc.hasNextInt()) {
+            if (sc.hasNextInt()) 
+            {
                 this.input = sc.nextInt();       // read integer input
             }
-            if (sc.hasNextInt()) {
+            if (sc.hasNextInt()) 
+            {
                 this.Exoutput = sc.nextInt();    // read integer expected output
             }
 
@@ -37,6 +42,12 @@ public class TestCase {
             System.out.println("Error loading test case from file: " + e.getMessage());
         }
     }
+    
+    public boolean isPassed() 
+    {
+    return this.status.equalsIgnoreCase("PASS");
+    }
+
 
     // Save test case to file
     public void save(String filename) {
