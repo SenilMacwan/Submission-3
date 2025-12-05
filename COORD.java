@@ -1,6 +1,7 @@
 import java.io.File;
 
-public class COORD {
+public class COORD
+{
 
   protected static ListTC listOfTestCase = new ListTC();
   protected static ListTS listOfTestSuite = new ListTS();
@@ -150,4 +151,13 @@ public class COORD {
       return "Error tracing test case.";
     }
   }
+
+  public double getSuiteSuccessRate(TestSuite suite) {
+    return SuccessRate.getTestSuiteSuccessRate(suite);
+}
+
+public double getOverallSuccessRate() {
+    return SuccessRate.getOverallSuccessRate(allSuites);
+}
+
 }
