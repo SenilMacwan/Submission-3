@@ -1,11 +1,12 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 
 /***********************************************************
 * Handles the execution logic for running the test suites
 * with int input/output.
-*
+* supports multiple files
 * @author Senil Macwan
 ***********************************************************/
 public class ExecuteTestSuite
@@ -47,16 +48,20 @@ public class ExecuteTestSuite
         File[] javaFiles = sub.listFiles((dir, name) -> name.endsWith(".java"));
 
         if (javaFiles == null || javaFiles.length == 0) {
-            outputLog.append("No .java file found inside ").append(sub.getName()).append("\n");
+            outputLog.append("No .java file found.\n");
             continue;
         }
 
-        File codeFile = javaFiles[0];
-        String className = codeFile.getName().replace(".java", "");
+         File mainFile = findMainFile(javaFiles);
+            if (mainFile == null) {
+                outputLog.append("ERROR: No main method found in folder.\n");
+                continue;
+            }
 
-        outputLog.append("Found program: ").append(className).append("\n");
+            String className = mainFile.getName().replace(".java", "");
+            outputLog.append("Main class detected: ").append(className).append("\n");
 
-        if (!compileProgram(codeFile)) {
+        if (!compileProgram(mainFile)) {
             outputLog.append("Compilation failed for: ").append(className).append("\n");
             continue;
         }
@@ -90,17 +95,30 @@ public class ExecuteTestSuite
         }
     }
 }
+     private File findMainFile(File[] javaFiles) {
+        try {
+            for (File f : javaFiles) {
+                String content = Files.readString(f.toPath());
+                if (content.contains("public static void main(")) {
+                    return f;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading files: " + e);
+        }
+        return null;
+    }
 
 
     // Compile program using javac
-    protected boolean compileProgram(File javaFile)
+    protected boolean compileProgram(File mainJavaFile)
     {
         try
         {
             Process p = Runtime.getRuntime().exec(
-                "javac " + javaFile.getName(),
+                "javac " + mainJavaFile.getName(),
                 null,
-                javaFile.getParentFile()
+                mainJavaFile.getParentFile()
             );
             p.waitFor();
             return p.exitValue() == 0;
