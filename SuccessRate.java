@@ -13,6 +13,9 @@ public class SuccessRate
   {
         if (suite == null) return 0.0;
 
+        int total = suite.getTotalTestCases();
+        if (total == 0) return 0.0;
+
         int passed = suite.getPassedTestCases();
         return ((double) passed / total) * 100.0;
     }
@@ -24,6 +27,14 @@ public class SuccessRate
 
         int total = 0;
         int passed = 0;
+
+       for (int i = 0; i < list.getCount(); i++) 
+       {
+            TestSuite suite = list.getSuiteAt(i);
+            total += suite.getTotalTestCases();
+            passed += suite.getPassedTestCases();
+        }
+
 
         if (total == 0) return 0.0;
 
