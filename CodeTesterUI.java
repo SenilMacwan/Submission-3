@@ -1,15 +1,17 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.TextInputDialog;
 
 public class CodeTesterUI extends Application {
 
@@ -26,9 +28,9 @@ public class CodeTesterUI extends Application {
         titleBox.setPadding(new Insets(30, 0, 10, 0));
         titleBox.setAlignment(Pos.CENTER);
 
-        Text title = new Text("CODE TESTER");
+        Label title = new Label("CODE TESTER");
         title.setFont(Font.font("Arial", 36));
-        title.setFill(Color.BLACK);
+        title.setTextFill(Color.BLACK);
         titleBox.getChildren().add(title);
         root.setTop(titleBox);
 
@@ -38,13 +40,9 @@ public class CodeTesterUI extends Application {
         infoBox.setPadding(new Insets(10, 25, 0, 0));
         BorderPane.setAlignment(infoBox, Pos.TOP_RIGHT);
 
-        Text info1 = new Text("CS 2043");
-        Text info2 = new Text("Team 10");
-        Text info3 = new Text("Group Members");
-
-        info1.setFill(Color.rgb(60, 60, 60));
-        info2.setFill(Color.rgb(60, 60, 60));
-        info3.setFill(Color.rgb(60, 60, 60));
+        Label info1 = new Label("CS 2043");
+        Label info2 = new Label("Team 10");
+        Label info3 = new Label("Group Members");
 
         info1.setFont(Font.font(15));
         info2.setFont(Font.font(15));
@@ -53,29 +51,28 @@ public class CodeTesterUI extends Application {
         infoBox.getChildren().addAll(info1, info2, info3);
         root.setRight(infoBox);
 
-        // ===================== MESSAGE BOX =====================
+        // ===================== BOTTOM LAYOUT =====================
         HBox bottom = new HBox();
         bottom.setSpacing(40);
         bottom.setPadding(new Insets(30, 40, 40, 40));
 
-        VBox msgBox = new VBox();
-        msgBox.setAlignment(Pos.TOP_LEFT);
-        msgBox.setPadding(new Insets(20));
-        msgBox.setBackground(new Background(new BackgroundFill(
-                Color.rgb(225, 235, 245),
-                new CornerRadii(10),
-                Insets.EMPTY
-        )));
-
-        DropShadow msgShadow = new DropShadow();
-        msgShadow.setRadius(12);
-        msgShadow.setColor(Color.gray(0.5, 0.3));
-        msgBox.setEffect(msgShadow);
-
-        Text msgText = new Text("Click a button...");
+        // ===================== SCROLLABLE OUTPUT AREA =====================
+        Label msgText = new Label("Click a button...");
         msgText.setFont(Font.font("Arial", 18));
-        msgText.setFill(Color.rgb(40, 40, 70));
-        msgBox.getChildren().add(msgText);
+        msgText.setTextFill(Color.rgb(40, 40, 70));
+        msgText.setWrapText(true);  // KEY FIX — enables height expansion
+
+        VBox msgContent = new VBox(msgText);
+        msgContent.setAlignment(Pos.TOP_LEFT);
+        msgContent.setPadding(new Insets(20));
+        msgContent.setPrefWidth(520);  // REQUIRED for scrolling + wrapping
+
+        ScrollPane msgBox = new ScrollPane(msgContent);
+        msgBox.setFitToWidth(true);
+        msgBox.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        msgBox.setStyle("-fx-background-color: transparent;");
+        msgBox.setPrefWidth(550);
+        msgBox.setPrefHeight(430);
 
         // ===================== BUTTON PANEL =====================
         VBox buttonBox = new VBox(12);
@@ -118,19 +115,18 @@ public class CodeTesterUI extends Application {
                 dialog.setHeaderText("Enter Test Case Title:");
                 String titleTC = dialog.showAndWait().orElse("");
 
-                dialog.setHeaderText("Enter Test Case Input (int):");
+                dialog.setHeaderText("Enter Input:");
                 int input = Integer.parseInt(dialog.showAndWait().orElse("0"));
 
-                dialog.setHeaderText("Enter Expected Output (int):");
+                dialog.setHeaderText("Enter Expected Output:");
                 int expected = Integer.parseInt(dialog.showAndWait().orElse("0"));
 
                 StringBuilder debug = new StringBuilder();
                 COORD.NewTestCase(titleTC, input, expected, debug);
-
                 msgText.setText(debug.toString());
 
             } catch (Exception ex) {
-                msgText.setText("Invalid Input.\n" + ex.getMessage());
+                msgText.setText("Invalid input.");
             }
         });
 
@@ -141,7 +137,6 @@ public class CodeTesterUI extends Application {
 
             StringBuilder debug = new StringBuilder();
             COORD.LoadTestCase(file, debug);
-
             msgText.setText(debug.toString());
         });
 
@@ -152,7 +147,6 @@ public class CodeTesterUI extends Application {
 
             StringBuilder debug = new StringBuilder();
             COORD.CreateTestSuite(suite, debug);
-
             msgText.setText(debug.toString());
         });
 
@@ -166,41 +160,38 @@ public class CodeTesterUI extends Application {
 
             StringBuilder debug = new StringBuilder();
             COORD.SaveTestCase(titleTC, file, debug);
-
             msgText.setText(debug.toString());
         });
 
         btnAddToSuite.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setHeaderText("Test Suite Name:");
+            dialog.setHeaderText("Suite Name:");
             String suite = dialog.showAndWait().orElse("");
 
             dialog.setHeaderText("Test Case Name:");
-            String titleTC = dialog.showAndWait().orElse("");
+            String tc = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            COORD.addTestCaseToTestSuite(suite, titleTC, debug);
-
+            COORD.addTestCaseToTestSuite(suite, tc, debug);
             msgText.setText(debug.toString());
         });
 
         btnTraceTestCase.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setHeaderText("Enter TestCase Title:");
+            dialog.setHeaderText("Test Case Title:");
             String titleTC = dialog.showAndWait().orElse("");
 
-            dialog.setHeaderText("Enter Program Folder:");
+            dialog.setHeaderText("Folder Path:");
             String folder = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            String output = COORD.traceTestCase(titleTC, folder, debug);
-
-            msgText.setText(debug + "\nOUTPUT:\n" + output);
+            String out = COORD.traceTestCase(titleTC, folder, debug);
+            msgText.setText(debug + "\nOUTPUT:\n" + out);
         });
 
         btnPrintTestCase.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setHeaderText("Enter TestCase Title:");
+            dialog.setHeaderText("Test Case Title:");
             String titleTC = dialog.showAndWait().orElse("");
 
             msgText.setText(COORD.printTC(titleTC));
@@ -215,16 +206,17 @@ public class CodeTesterUI extends Application {
             String folder = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            ExecuteTestSuite runner = new ExecuteTestSuite();  // FIXED
+            ExecuteTestSuite runner = new ExecuteTestSuite();
             runner.runSuite(suite, folder, debug);
 
-            msgText.setText(debug.toString());
+            Platform.runLater(() -> msgText.setText(debug.toString()));
         });
 
+        // Add buttons
         buttonBox.getChildren().addAll(
                 btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite,
-                btnSaveTestCase, btnAddToSuite,
-                btnTraceTestCase, btnPrintTestCase, btnRunTestSuite
+                btnSaveTestCase, btnAddToSuite, btnTraceTestCase,
+                btnPrintTestCase, btnRunTestSuite
         );
 
         bottom.getChildren().addAll(msgBox, buttonBox);
@@ -241,17 +233,17 @@ public class CodeTesterUI extends Application {
         b.setPrefWidth(180);
         b.setFont(Font.font("Arial", 14));
         b.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #f8f8f8, #e0e0e0); " +
-                "-fx-border-color: #999; " +
-                "-fx-border-radius: 6; " +
+                "-fx-background-color: linear-gradient(to bottom, #f8f8f8, #e0e0e0);" +
+                "-fx-border-color: #999;" +
+                "-fx-border-radius: 6;" +
                 "-fx-background-radius: 6;"
         );
         b.setOnMouseEntered(e -> b.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #ffffff, #d8e2ff); " +
+                "-fx-background-color: linear-gradient(to bottom, #ffffff, #d8e2ff);" +
                 "-fx-border-color: #666;"
         ));
         b.setOnMouseExited(e -> b.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #f8f8f8, #e0e0e0); " +
+                "-fx-background-color: linear-gradient(to bottom, #f8f8f8, #e0e0e0);" +
                 "-fx-border-color: #999;"
         ));
     }

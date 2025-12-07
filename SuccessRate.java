@@ -1,4 +1,4 @@
-public class SuccessRate 
+/*public class SuccessRate 
 {
 
     // Calculate success rate for a single TestCase
@@ -46,4 +46,4 @@ public class SuccessRate
   {
         return String.format("%.2f%%", rate);
     }
-}
+}*/

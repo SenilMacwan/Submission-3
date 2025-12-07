@@ -1,156 +1,149 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
 
-/***********************************************************
-* Handles the execution logic for running the test suites
-* with int input/output.
-* supports multiple files
-* @author Senil Macwan
-***********************************************************/
 public class ExecuteTestSuite
 {
-    private COORD coord;
-
-    public ExecuteTestSuite(COORD c)
-    {
-        this.coord = c;
+    public ExecuteTestSuite() {
+        // COORD data is static; nothing to store here
     }
 
-    /**
-     * Runs the given test suite on all subfolders inside the root directory.
-     */
-   public void runSuite(String suiteName, String rootFolder, StringBuilder outputLog) {
-    TestSuite ts = COORD.listOfTestSuite.search(suiteName);
+    public void runSuite(String suiteName, String rootFolder, StringBuilder outputLog) {
 
-    if (ts == null) {
-        outputLog.append("Test Suite not found: ").append(suiteName).append("\n");
-        return;
-    }
+        TestSuite ts = COORD.listOfTestSuite.search(suiteName);
 
-    File root = new File(rootFolder);
-
-    if (!root.exists() || !root.isDirectory()) {
-        outputLog.append("Invalid folder: ").append(rootFolder).append("\n");
-        return;
-    }
-
-    outputLog.append("Running Test Suite: ").append(suiteName).append("\n");
-    outputLog.append("Root folder: ").append(rootFolder).append("\n");
-    outputLog.append("-----------------------------------------\n");
-
-    for (File sub : root.listFiles()) {
-        if (!sub.isDirectory()) continue;
-
-        outputLog.append("\nProgram folder: ").append(sub.getName()).append("\n");
-
-        File[] javaFiles = sub.listFiles((dir, name) -> name.endsWith(".java"));
-
-        if (javaFiles == null || javaFiles.length == 0) {
-            outputLog.append("No .java file found.\n");
-            continue;
+        if (ts == null) {
+            outputLog.append("Test Suite not found: ").append(suiteName).append("\n");
+            return;
         }
 
-         File mainFile = findMainFile(javaFiles);
-            if (mainFile == null) {
-                outputLog.append("ERROR: No main method found in folder.\n");
+        File root = new File(rootFolder);
+
+        if (!root.exists() || !root.isDirectory()) {
+            outputLog.append("Invalid folder: ").append(rootFolder).append("\n");
+            return;
+        }
+
+        outputLog.append("Running Test Suite: ").append(suiteName).append("\n");
+        outputLog.append("Root folder: ").append(rootFolder).append("\n");
+        outputLog.append("-----------------------------------------\n");
+
+        for (File sub : root.listFiles()) {
+            if (!sub.isDirectory()) continue;
+
+            outputLog.append("\nProgram folder: ").append(sub.getName()).append("\n");
+
+            File[] javaFiles = sub.listFiles((dir, name) -> name.endsWith(".java"));
+
+            if (javaFiles == null || javaFiles.length == 0) {
+                outputLog.append("No .java file found inside ").append(sub.getName()).append("\n");
                 continue;
             }
 
-            String className = mainFile.getName().replace(".java", "");
-            outputLog.append("Main class detected: ").append(className).append("\n");
+            File codeFile = javaFiles[0];
+            String className = codeFile.getName().replace(".java", "");
 
-        if (!compileProgram(mainFile)) {
-            outputLog.append("Compilation failed for: ").append(className).append("\n");
-            continue;
-        }
+            outputLog.append("Found program: ").append(className).append("\n");
 
-        for (TestCase tc : ts.listTC) {
-            outputLog.append("  Test Case: ").append(tc.title).append("\n");
-            outputLog.append("  Input: ").append(tc.input).append("\n");
-
-            String output = runProgram(sub, className, String.valueOf(tc.input));
-
-            if (output == null) {
-                outputLog.append("   ERROR: Program crashed\n");
+            if (!compileProgram(codeFile)) {
+                outputLog.append("Compilation failed for: ").append(className).append("\n");
                 continue;
             }
 
-            outputLog.append("  Output: ").append(output.trim()).append("\n");
-            outputLog.append("  Expected: ").append(tc.Exoutput).append("\n");
+            for (TestCase tc : ts.listTC) {
+                outputLog.append("  Test Case: ").append(tc.title).append("\n");
+                outputLog.append("  Input: ").append(tc.input).append("\n");
 
-            try {
-                int actual = Integer.parseInt(output.trim());
-                if (actual == tc.Exoutput) {
-                    outputLog.append("  RESULT: PASS\n");
-                } else {
-                    outputLog.append("  RESULT: FAIL\n");
+                String output = runProgram(sub, className, String.valueOf(tc.input));
+
+                if (output == null) {
+                    outputLog.append("   ERROR: Program crashed\n");
+                    continue;
                 }
-            } catch (NumberFormatException e) {
-                outputLog.append("  RESULT: FAIL (non-integer output)\n");
-            }
 
-            outputLog.append("\n");
+                outputLog.append("  Output: ").append(output.trim()).append("\n");
+                outputLog.append("  Expected: ").append(tc.Exoutput).append("\n");
+
+                try {
+                    int actual = Integer.parseInt(output.trim());
+                    if (actual == tc.Exoutput) {
+                        outputLog.append("  RESULT: PASS\n");
+                    } else {
+                        outputLog.append("  RESULT: FAIL\n");
+                    }
+                } catch (NumberFormatException e) {
+                    outputLog.append("  RESULT: FAIL (non-integer output)\n");
+                }
+
+                outputLog.append("\n");
+            }
         }
+    }
+
+    protected boolean compileProgram(File javaFile) {
+    try {
+        String folder = javaFile.getParentFile().getAbsolutePath();
+
+        ProcessBuilder pb = new ProcessBuilder(
+            "javac",
+            "-cp", folder,      // classpath fixed
+            javaFile.getName()
+        );
+
+        pb.directory(javaFile.getParentFile());
+        pb.redirectErrorStream(true);
+
+        Process p = pb.start();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+
+        return p.waitFor() == 0;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
     }
 }
-     private File findMainFile(File[] javaFiles) {
-        try {
-            for (File f : javaFiles) {
-                String content = Files.readString(f.toPath());
-                if (content.contains("public static void main(")) {
-                    return f;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Error reading files: " + e);
+
+
+    protected String runProgram(File folder, String className, String input) {
+    try {
+        ProcessBuilder pb = new ProcessBuilder(
+            "java",
+            "-cp", folder.getAbsolutePath(),   // FIX
+            className
+        );
+
+        pb.directory(folder);
+        pb.redirectErrorStream(true);
+
+        Process p = pb.start();
+
+        if (input != null && !input.isEmpty()) {
+            p.getOutputStream().write((input + "\n").getBytes());
+            p.getOutputStream().flush();
         }
+        p.getOutputStream().close();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        StringBuilder result = new StringBuilder();
+        String line;
+
+        while ((line = br.readLine()) != null) {
+            result.append(line).append("\n");
+        }
+
+        p.waitFor();
+        return result.toString().trim();
+
+    } catch (Exception e) {
+        System.out.println("Runtime error: " + e);
         return null;
     }
+}
 
-
-    // Compile program using javac
-    protected boolean compileProgram(File mainJavaFile)
-    {
-        try
-        {
-            Process p = Runtime.getRuntime().exec(
-                "javac " + mainJavaFile.getName(),
-                null,
-                mainJavaFile.getParentFile()
-            );
-            p.waitFor();
-            return p.exitValue() == 0;
-        }
-        catch (Exception e)
-        {
-            System.out.println("Compilation error: " + e);
-            return false;
-        }
-    }
-
-    // Run program using java className <input>
-    protected String runProgram(File folder, String className, String input)
-    {
-        try
-        {
-            String[] cmd = {"java", className, input};
-
-            Process p = Runtime.getRuntime().exec(cmd, null, folder);
-
-            BufferedReader br = new BufferedReader(
-                new InputStreamReader(p.getInputStream())
-            );
-
-            String line = br.readLine(); // program prints 1-line integer output
-
-            return line;
-        }
-        catch (Exception e)
-        {
-            System.out.println("Runtime error: " + e);
-            return null;
-        }
-    }
 }
