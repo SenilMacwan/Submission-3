@@ -173,18 +173,10 @@ public class CodeTesterUI extends Application
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
-   //adding options to show success rates
-   double rate = coord.getSuiteSuccessRate(selectedSuite);
-System.out.println("Success Rate: " + SuccessRate.formatRate(rate));
-
-double overall = coord.getOverallSuccessRate();
-System.out.println("Overall System Success Rate: " + SuccessRate.formatRate(overall));
-
-
     public static void main(String[] args)
     {
         launch(args);
     }
 }
+
 
