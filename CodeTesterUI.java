@@ -53,12 +53,11 @@ public class CodeTesterUI extends Application {
         infoBox.getChildren().addAll(info1, info2, info3);
         root.setRight(infoBox);
 
-        // ===================== BOTTOM: MSG + BUTTONS =====================
+        // ===================== MESSAGE BOX =====================
         HBox bottom = new HBox();
         bottom.setSpacing(40);
         bottom.setPadding(new Insets(30, 40, 40, 40));
 
-        // ------ LEFT MESSAGE BOX ------
         VBox msgBox = new VBox();
         msgBox.setAlignment(Pos.TOP_LEFT);
         msgBox.setPadding(new Insets(20));
@@ -67,6 +66,7 @@ public class CodeTesterUI extends Application {
                 new CornerRadii(10),
                 Insets.EMPTY
         )));
+
         DropShadow msgShadow = new DropShadow();
         msgShadow.setRadius(12);
         msgShadow.setColor(Color.gray(0.5, 0.3));
@@ -77,7 +77,7 @@ public class CodeTesterUI extends Application {
         msgText.setFill(Color.rgb(40, 40, 70));
         msgBox.getChildren().add(msgText);
 
-        // ------ RIGHT BUTTON PANEL ------
+        // ===================== BUTTON PANEL =====================
         VBox buttonBox = new VBox(12);
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setPadding(new Insets(25));
@@ -86,6 +86,7 @@ public class CodeTesterUI extends Application {
                 new CornerRadii(15),
                 Insets.EMPTY
         )));
+
         DropShadow shadow = new DropShadow();
         shadow.setRadius(18);
         shadow.setColor(Color.gray(0.6, 0.35));
@@ -95,8 +96,10 @@ public class CodeTesterUI extends Application {
         Button btnLoadTestCase = new Button("Load Test Case");
         Button btnCreateTestSuite = new Button("Create Test Suite");
         Button btnSaveTestCase = new Button("Save Test Case");
-        Button btnAddToSuite = new Button("Add Test Case to Test Suite");
-        Button btnTraceTestCase = new Button("Trace test case");
+        Button btnAddToSuite = new Button("Add Test Case to Suite");
+        Button btnTraceTestCase = new Button("Trace Test Case");
+        Button btnPrintTestCase = new Button("Print Test Case");
+        Button btnRunTestSuite = new Button("Run Test Suite");
 
         applyCoolButtonStyle(btnCreateTestCase);
         applyCoolButtonStyle(btnLoadTestCase);
@@ -104,119 +107,124 @@ public class CodeTesterUI extends Application {
         applyCoolButtonStyle(btnSaveTestCase);
         applyCoolButtonStyle(btnAddToSuite);
         applyCoolButtonStyle(btnTraceTestCase);
+        applyCoolButtonStyle(btnPrintTestCase);
+        applyCoolButtonStyle(btnRunTestSuite);
 
-        // ===================== BUTTON HANDLERS WITH INT INPUT =====================
+        // ===================== BUTTON HANDLERS =====================
+
         btnCreateTestCase.setOnAction(e -> {
             try {
                 TextInputDialog dialog = new TextInputDialog();
                 dialog.setHeaderText("Enter Test Case Title:");
-                String TCtitle = dialog.showAndWait().orElse("");
+                String titleTC = dialog.showAndWait().orElse("");
 
                 dialog.setHeaderText("Enter Test Case Input (int):");
-                int TCinput = Integer.parseInt(dialog.showAndWait().orElse("0"));
+                int input = Integer.parseInt(dialog.showAndWait().orElse("0"));
 
                 dialog.setHeaderText("Enter Expected Output (int):");
-                int TCoutput = Integer.parseInt(dialog.showAndWait().orElse("0"));
+                int expected = Integer.parseInt(dialog.showAndWait().orElse("0"));
 
                 StringBuilder debug = new StringBuilder();
-                boolean success = COORD.NewTestCase(TCtitle, TCinput, TCoutput, debug);
+                COORD.NewTestCase(titleTC, input, expected, debug);
+
                 msgText.setText(debug.toString());
+
             } catch (Exception ex) {
-                msgText.setText("❌ Invalid input. Please enter an integer.\n" + ex.getMessage());
+                msgText.setText("Invalid Input.\n" + ex.getMessage());
             }
         });
 
         btnLoadTestCase.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setHeaderText("Enter Test Case File Name:");
-            String fileName = dialog.showAndWait().orElse("");
+            dialog.setHeaderText("Enter File Name:");
+            String file = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            boolean success = COORD.LoadTestCase(fileName, debug);
+            COORD.LoadTestCase(file, debug);
+
             msgText.setText(debug.toString());
         });
 
         btnCreateTestSuite.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setHeaderText("Enter Test Suite Name:");
-            String TSname = dialog.showAndWait().orElse("");
+            dialog.setHeaderText("Enter Suite Name:");
+            String suite = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            boolean success = COORD.CreateTestSuite(TSname, debug);
+            COORD.CreateTestSuite(suite, debug);
+
             msgText.setText(debug.toString());
         });
 
         btnSaveTestCase.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setHeaderText("Enter Test Case Name to Save:");
-            String tcName = dialog.showAndWait().orElse("");
+            dialog.setHeaderText("Enter TestCase Title:");
+            String titleTC = dialog.showAndWait().orElse("");
 
-            dialog.setHeaderText("Enter File Name (.txt):");
-            String fileName = dialog.showAndWait().orElse("");
+            dialog.setHeaderText("Enter File Name:");
+            String file = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            boolean success = COORD.SaveTestCase(tcName, fileName, debug);
+            COORD.SaveTestCase(titleTC, file, debug);
+
             msgText.setText(debug.toString());
         });
 
         btnAddToSuite.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setHeaderText("Enter Test Case Name:");
-            String tcName = dialog.showAndWait().orElse("");
+            dialog.setHeaderText("Test Suite Name:");
+            String suite = dialog.showAndWait().orElse("");
 
-            dialog.setHeaderText("Enter Test Suite Name:");
-            String tsName = dialog.showAndWait().orElse("");
+            dialog.setHeaderText("Test Case Name:");
+            String titleTC = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            boolean success = COORD.addTestCaseToTestSuite(tsName, tcName, debug);
+            COORD.addTestCaseToTestSuite(suite, titleTC, debug);
+
             msgText.setText(debug.toString());
         });
 
         btnTraceTestCase.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setHeaderText("Enter Test Case Name:");
-            String tcName = dialog.showAndWait().orElse("");
+            dialog.setHeaderText("Enter TestCase Title:");
+            String titleTC = dialog.showAndWait().orElse("");
 
-            dialog.setHeaderText("Enter Program Folder Path:");
+            dialog.setHeaderText("Enter Program Folder:");
             String folder = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            String output = COORD.traceTestCase(tcName, folder, debug);
-            debug.append("\n=== Trace Output ===\n").append(output);
+            String output = COORD.traceTestCase(titleTC, folder, debug);
+
+            msgText.setText(debug + "\nOUTPUT:\n" + output);
+        });
+
+        btnPrintTestCase.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Enter TestCase Title:");
+            String titleTC = dialog.showAndWait().orElse("");
+
+            msgText.setText(COORD.printTC(titleTC));
+        });
+
+        btnRunTestSuite.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Suite Name:");
+            String suite = dialog.showAndWait().orElse("");
+
+            dialog.setHeaderText("Root Folder Path:");
+            String folder = dialog.showAndWait().orElse("");
+
+            StringBuilder debug = new StringBuilder();
+            ExecuteTestSuite runner = new ExecuteTestSuite();  // FIXED
+            runner.runSuite(suite, folder, debug);
+
             msgText.setText(debug.toString());
         });
-        
-
-Button btnRunTestSuite = new Button("Run Test Suite");
-applyCoolButtonStyle(btnRunTestSuite);
-
-btnRunTestSuite.setOnAction(e -> {
-    TextInputDialog dialog = new TextInputDialog();
-    dialog.setHeaderText("Enter Test Suite Name:");
-    String tsName = dialog.showAndWait().orElse("");
-
-    dialog.setHeaderText("Enter Root Program Folder Path:");
-    String folder = dialog.showAndWait().orElse("");
-
-    StringBuilder debug = new StringBuilder();
-    ExecuteTestSuite runner = new ExecuteTestSuite(new COORD());
-    runner.runSuite(tsName, folder, debug);
-
-    msgText.setText(debug.toString());
-});
-
-
-
-buttonBox.getChildren().add(btnRunTestSuite);
-
 
         buttonBox.getChildren().addAll(
-                btnCreateTestCase,
-                btnLoadTestCase,
-                btnCreateTestSuite,
-                btnSaveTestCase,
-                btnAddToSuite,
-                btnTraceTestCase
+                btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite,
+                btnSaveTestCase, btnAddToSuite,
+                btnTraceTestCase, btnPrintTestCase, btnRunTestSuite
         );
 
         bottom.getChildren().addAll(msgBox, buttonBox);
@@ -240,15 +248,11 @@ buttonBox.getChildren().add(btnRunTestSuite);
         );
         b.setOnMouseEntered(e -> b.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ffffff, #d8e2ff); " +
-                "-fx-border-color: #666; " +
-                "-fx-border-radius: 6; " +
-                "-fx-background-radius: 6;"
+                "-fx-border-color: #666;"
         ));
         b.setOnMouseExited(e -> b.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #f8f8f8, #e0e0e0); " +
-                "-fx-border-color: #999; " +
-                "-fx-border-radius: 6; " +
-                "-fx-background-radius: 6;"
+                "-fx-border-color: #999;"
         ));
     }
 

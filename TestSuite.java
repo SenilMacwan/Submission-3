@@ -25,17 +25,18 @@ public class TestSuite
         listTC.add(tc);
     }
 
-    public int getTotalTestCases() {
-    return testCases.getCount();
-}
-
-public int getPassedTestCases() {
-    int count = 0;
-    for (int i = 0; i < testCases.getCount(); i++) {
-        if (testCases.getAt(i).isPassed()) {
-            count++;
-        }
+      public int getTotalTestCases() 
+      {
+        return listTC.getCount();
     }
-    return count;
-}
+
+   /* public int getPassedTestCases() {
+        int count = 0;
+        for (int i = 0; i < listTC.getCount(); i++) {
+            if (listTC.getAt(i).isPassed()) {
+                count++;
+            }
+        }
+        return count;
+    }*/
 }
