@@ -241,7 +241,7 @@ public class CodeTesterUI extends Application {
 
             StringBuilder debug = new StringBuilder();
 
-            COORD.runAndSaveTestSuiteOnFolder( suite, folder.getAbsolutePath(), "results_v2.ser", debug);
+            COORD.runTestSuiteOnFolder( suite, folder.getAbsolutePath(), "results_v2.ser", debug);
 
             msgText.setText(debug.toString());
         });    

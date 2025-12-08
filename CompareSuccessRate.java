@@ -6,17 +6,15 @@
  *
  * @author Abdullah Tauqir
  * @Project CS-2043 / Group 10
- **************************************************/
+ **************************************************
 
 public class CompareSuccessRate 
 {
     /**
      * Compares two TestSuites by their success rate.
      * Returns a clean, readable message.
-     */
-    public static String compare(TestSuite a, String folderA,
-                                 TestSuite b, String folderB,
-                                 COORD coord, StringBuilder debug)
+     *
+    public static String compare(TestSuite a, TestSuite b)
     {
         // Safety checks
         if (a == null || b == null)
@@ -45,4 +43,4 @@ public class CompareSuccessRate
             return "Both TestSuites have the same success rate (" + rA + ").";
         }
     }
-}
+}*/

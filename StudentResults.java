@@ -43,4 +43,3 @@ public class StudentResults implements Serializable
     public Map<String, Boolean> getTestResults() { return testResults; }
     
 }
-

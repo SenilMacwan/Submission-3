@@ -1,4 +1,10 @@
 import java.io.File;
+import java.util.List;
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class COORD {
 
@@ -199,7 +205,7 @@ public class COORD {
     // ============================================
     // Saving results of running a test suite
     // ============================================
-    public static boolean saveStudentResults(List<StudentResult> results,cString fileName, StringBuilder debug)
+    public static boolean saveStudentResults(List<StudentResults> results,String fileName, StringBuilder debug)
     {
         try 
         {
@@ -239,9 +245,9 @@ public class COORD {
     // ============================================
     // Run TestSuite on a root folder of student programs
     // ============================================
-    public static List<StudentResult> runTestSuiteOnFolder(String suiteName, String rootFolderPath, StringBuilder debug) 
+    public static List<StudentResults> runTestSuiteOnFolder(String suiteName, String rootFolderPath,String x, StringBuilder debug) 
     {
-        List<StudentResult> resultsList = new ArrayList<>();
+        List<StudentResults> resultsList = new ArrayList<>();
 
         try 
         {
@@ -274,12 +280,12 @@ public class COORD {
                 String studentName = studentFolder.getName();
                 debug.append("Testing student: ").append(studentName).append("\n");
 
-                int total = suite.size();
+                int total = suite.getTotalTestCases();
                 int passed = 0;
                 Map<String, Boolean> perTestResult = new HashMap<>();
 
                 // For each TestCase in the TestSuite
-                for (TestCase tc : suite.myList) 
+                for (TestCase tc : suite.listTC) 
                 {
 
                     File[] javaFiles = studentFolder.listFiles((dir, name) -> name.endsWith(".java"));
@@ -303,7 +309,7 @@ public class COORD {
 
                     // Run program with test case input
                     String output = runner.runProgram(studentFolder, className, String.valueOf(tc.input));
-                    boolean correct = (output != null && output.trim().equals(String.valueOf(tc.expectedOutput)));
+                    boolean correct = (output != null && output.trim().equals(String.valueOf(tc.Exoutput)));
                     perTestResult.put(tc.title, correct);
 
                     if (correct) 
@@ -311,7 +317,7 @@ public class COORD {
                 }
 
                 // Create the StudentResult object
-                StudentResult sr = new StudentResult(studentName, studentFolder.getAbsolutePath(), total, passed, perTestResult);
+                StudentResults sr = new StudentResults(studentName, studentFolder.getAbsolutePath(), total, passed, perTestResult);
                 resultsList.add(sr);
             }
 
