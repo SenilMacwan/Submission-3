@@ -1,9 +1,11 @@
 /****************************************************************************************************************
+
 * This scenario demonstrates all features of the Code Tester JavaFX application (Version 2),
 * including multiple test case handling, multiple student programs, resubmissions, and success rate comparison
 *
 * @author: Sanjida Shakhayet
 * CS 2043 / Group 10
+* 
 **********************************************************************************************************************/
 
 1. Start the Application
