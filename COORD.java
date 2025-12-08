@@ -236,7 +236,94 @@ public class COORD {
         }
     }
 
-    
+    // ============================================
+    // Run TestSuite on a root folder of student programs
+    // ============================================
+    public static List<StudentResult> runTestSuiteOnFolder(String suiteName, String rootFolderPath, StringBuilder debug) 
+    {
+        List<StudentResult> resultsList = new ArrayList<>();
+
+        try 
+        {
+            debug.append("Running TestSuite '").append(suiteName)
+                 .append("' on folder: ").append(rootFolderPath).append("\n");
+
+            // Find the TestSuite by name
+            TestSuite suite = listOfTestSuite.search(suiteName);
+            if (suite == null) 
+            {
+                debug.append("Error: TestSuite not found.\n");
+                return resultsList;
+            }
+
+            File root = new File(rootFolderPath);
+            File[] studentFolders = root.listFiles(File::isDirectory);
+
+            if (studentFolders == null || studentFolders.length == 0) 
+            {
+                debug.append("Error: No student folders found.\n");
+                return resultsList;
+            }
+
+            ExecuteTestSuite runner = new ExecuteTestSuite();
+
+            // Loop through each student's folder
+            for (File studentFolder : studentFolders) 
+            {
+
+                String studentName = studentFolder.getName();
+                debug.append("Testing student: ").append(studentName).append("\n");
+
+                int total = suite.size();
+                int passed = 0;
+                Map<String, Boolean> perTestResult = new HashMap<>();
+
+                // For each TestCase in the TestSuite
+                for (TestCase tc : suite.myList) 
+                {
+
+                    File[] javaFiles = studentFolder.listFiles((dir, name) -> name.endsWith(".java"));
+                    if (javaFiles == null || javaFiles.length == 0) 
+                    {
+                        debug.append("No Java file for ").append(studentName).append("\n");
+                        perTestResult.put(tc.title, false);
+                        continue;
+                    }
+
+                    File codeFile = javaFiles[0];
+                    String className = codeFile.getName().replace(".java", "");
+
+                    // Compile
+                    if (!runner.compileProgram(codeFile)) 
+                    {
+                        debug.append("Compilation failed for ").append(studentName).append("\n");
+                        perTestResult.put(tc.title, false);
+                        continue;
+                    }
+
+                    // Run program with test case input
+                    String output = runner.runProgram(studentFolder, className, String.valueOf(tc.input));
+                    boolean correct = (output != null && output.trim().equals(String.valueOf(tc.expectedOutput)));
+                    perTestResult.put(tc.title, correct);
+
+                    if (correct) 
+                        passed++;
+                }
+
+                // Create the StudentResult object
+                StudentResult sr = new StudentResult(studentName, studentFolder.getAbsolutePath(), total, passed, perTestResult);
+                resultsList.add(sr);
+            }
+
+        } 
+        catch (Exception e) 
+        {
+            debug.append("Exception in runTestSuiteOnFolder: ").append(e).append("\n");
+        }
+
+        return resultsList;
+    }
+
    /*  public double getSuiteSuccessRate(TestSuite suite) {
     return SuccessRate.getTestSuiteSuccessRate(suite);
 }
