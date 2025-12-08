@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.DirectoryChooser;
+import java.io.File;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -97,6 +99,8 @@ public class CodeTesterUI extends Application {
         Button btnTraceTestCase = new Button("Trace Test Case");
         Button btnPrintTestCase = new Button("Print Test Case");
         Button btnRunTestSuite = new Button("Run Test Suite");
+        Button btnRunTestSuiteV2 = new Button("Run Test Suite (V2)");
+
 
         applyCoolButtonStyle(btnCreateTestCase);
         applyCoolButtonStyle(btnLoadTestCase);
@@ -106,6 +110,7 @@ public class CodeTesterUI extends Application {
         applyCoolButtonStyle(btnTraceTestCase);
         applyCoolButtonStyle(btnPrintTestCase);
         applyCoolButtonStyle(btnRunTestSuite);
+        applyCoolButtonStyle(btnRunTestSuiteV2);
 
         // ===================== BUTTON HANDLERS =====================
 
@@ -212,11 +217,40 @@ public class CodeTesterUI extends Application {
             Platform.runLater(() -> msgText.setText(debug.toString()));
         });
 
+        btnRunTestSuiteV2.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Suite Name:");
+            String suite = dialog.showAndWait().orElse("");
+            
+            if (suite == null || suite.trim().isEmpty()) 
+            {
+                msgText.setText("No suite name provided.");
+                return;
+            }
+
+            // Letting the user choose the root folder 
+            DirectoryChooser chooser = new DirectoryChooser();
+            chooser.setTitle("Select V 2.0 Root Folder ");
+            File folder = chooser.showDialog(primaryStage);
+
+            if (folder == null) 
+            {
+                msgText.setText("No folder selected.");
+                return;
+            }
+
+            StringBuilder debug = new StringBuilder();
+
+            COORD.runAndSaveTestSuiteOnFolder( suite, folder.getAbsolutePath(), "results_v2.ser", debug);
+
+            msgText.setText(debug.toString());
+        });    
+            
         // Add buttons
         buttonBox.getChildren().addAll(
                 btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite,
                 btnSaveTestCase, btnAddToSuite, btnTraceTestCase,
-                btnPrintTestCase, btnRunTestSuite
+                btnPrintTestCase, btnRunTestSuite, btnRunTestSuiteV2
         );
 
         bottom.getChildren().addAll(msgBox, buttonBox);
