@@ -1,49 +1,43 @@
-/*public class SuccessRate 
-{
+public class SuccessRate {
 
-    // Calculate success rate for a single TestCase
-    public static double getTestCaseSuccessRate(TestCase tc) 
-  {
-        if (tc == null) return 0.0;
-        return tc.isPassed() ? 100.0 : 0.0;
-    }
-
-    // Calculate success rate for a TestSuite
-    public static double getTestSuiteSuccessRate(TestSuite suite) 
-  {
+    /**
+     * Runs all test cases inside a TestSuite and calculates success rate.
+     *
+     * @param suite The TestSuite to evaluate
+     * @param coord Reference to COORD so we can use traceTestCase()
+     * @param programFolder Folder where the student program is located
+     * @param debug Debug log
+     * @return Success rate as a percentage (0–100)
+     */
+    public static double getTestSuiteSuccessRate(TestSuite suite, 
+                                                 COORD coord, 
+                                                 String programFolder, 
+                                                 StringBuilder debug) 
+    {
         if (suite == null) return 0.0;
 
-        int total = suite.getTotalTestCases();
+        int total = suite.listTC.getCount();
         if (total == 0) return 0.0;
 
-        int passed = suite.getPassedTestCases();
-        return ((double) passed / total) * 100.0;
-    }
-
-    // Calculate overall success rate of all TestSuites in the project
-    public static double getOverallSuccessRate(ListOfTestSuite list) 
-  {
-        if (list == null || list.getCount() == 0) return 0.0;
-
-        int total = 0;
         int passed = 0;
 
-       for (int i = 0; i < list.getCount(); i++) 
-       {
-            TestSuite suite = list.getSuiteAt(i);
-            total += suite.getTotalTestCases();
-            passed += suite.getPassedTestCases();
+        // Run each test case
+        for (TestCase tc : suite.listTC) {
+            String output = coord.traceTestCase(tc.title, programFolder, debug);
+
+            // PASS if exact match
+            if (output != null && output.trim().equals(String.valueOf(tc.Exoutput))) {
+                passed++;
+            }
         }
 
-
-        if (total == 0) return 0.0;
-
-        return ((double) passed / total) * 100.0;
+        return (passed * 100.0) / total;
     }
 
-    // Clean formatted string for UI printing
-    public static String formatRate(double rate)
-  {
+    /**
+     * Formats success rate with two decimals.
+     */
+    public static String formatRate(double rate) {
         return String.format("%.2f%%", rate);
     }
-}*/
+}
