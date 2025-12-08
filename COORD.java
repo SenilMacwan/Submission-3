@@ -1,7 +1,11 @@
 import java.io.File;
-import java.util.List;
-import java.io.ObjectOutputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;     
+import java.io.ObjectInputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -241,11 +245,60 @@ public class COORD {
             return false;
         }
     }
+    
+    // ============================================
+    // Save student results in a text file 
+    // ============================================
+    public static boolean saveStudentResultsAsText(List<StudentResults> results, String fileName, StringBuilder debug) 
+    {
+        try 
+        {
+            debug.append("Saving student results as text to file: ")
+                 .append(fileName).append("\n");
 
+            if (results == null || results.isEmpty()) 
+            {
+                debug.append("Error: No results to save as text.\n");
+                return false;
+            }
+
+            if (fileName == null || fileName.isEmpty()) 
+            {
+                debug.append("Error: Text file name is empty.\n");
+                return false;
+            }
+
+            try (PrintWriter out = new PrintWriter(new FileWriter(fileName))) 
+            {
+                // Header row
+                out.println("Student, TotalTests, PassedTests, SuccessRatePercent");
+
+                for (StudentResults sr : results) 
+                {
+                    int total = sr.getTotalTests();
+                    int passed = sr.getPassedTests();
+                    double rate = (total > 0) ? (passed * 100.0 / total) : 0.0;
+
+                    System.out.printf("%s,%d,%d,%.1f%n", sr.getStudentName(), total, passed, rate);
+                }
+            }
+
+            debug.append("Student results text file saved successfully.\n");
+            return true;
+
+        } 
+        catch (Exception e) 
+        {
+            debug.append("Exception in saveStudentResultsAsText: ")
+                 .append(e).append("\n");
+            return false;
+        }
+    }
+        
     // ============================================
     // Run TestSuite on a root folder of student programs
     // ============================================
-    public static List<StudentResults> runTestSuiteOnFolder(String suiteName, String rootFolderPath,String x, StringBuilder debug) 
+    public static List<StudentResults> runTestSuiteOnFolder(String suiteName, String rootFolderPath, StringBuilder debug) 
     {
         List<StudentResults> resultsList = new ArrayList<>();
 
@@ -329,6 +382,44 @@ public class COORD {
 
         return resultsList;
     }
+    
+    // ============================================
+    // Load previously saved student results (.ser)
+    // ============================================
+    public static List<StudentResults> loadStudentResults(String fileName, StringBuilder debug) 
+    {
+        List<StudentResults> results = new ArrayList<>();
+
+        try 
+        {
+            debug.append("Loading student results from file: ")
+                 .append(fileName).append("\n");
+
+            if (fileName == null || fileName.isEmpty()) 
+            {
+                debug.append("Error: File name is empty.\n");
+                return results;
+            }
+
+            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) 
+            {
+
+                Object obj = in.readObject();
+                results = (List<StudentResults>) obj;
+            }
+
+            debug.append("Student results loaded successfully.\n");
+
+        } 
+        catch (Exception e) 
+        {
+            debug.append("Exception in loadStudentResults: ")
+                 .append(e).append("\n");
+        }
+
+        return results;
+    }
+
 
    /*  public double getSuiteSuccessRate(TestSuite suite) {
     return SuccessRate.getTestSuiteSuccessRate(suite);
