@@ -195,6 +195,47 @@ public class COORD {
         TestCase printable = listOfTestCase.search(Title);
         return (printable == null) ? "TestCase not found." : printable.toStringTC();
     }
+
+    // ============================================
+    // Saving results of running a test suite
+    // ============================================
+    public static boolean saveStudentResults(List<StudentResult> results,cString fileName, StringBuilder debug)
+    {
+        try 
+        {
+            debug.append("Saving student results to file: ")
+                 .append(fileName).append("\n");
+
+            if (results == null || results.isEmpty()) 
+            {
+                debug.append("Error: No results to save.\n");
+                return false;
+            }
+
+            if (fileName == null || fileName.isEmpty()) 
+            {
+                debug.append("Error: File name is empty.\n");
+                return false;
+            }
+
+            // Serializing the list of results to a file
+            try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) 
+            {
+                out.writeObject(results);
+            }
+
+            debug.append("Student results saved successfully.\n");
+            return true;
+
+        } 
+        catch (Exception e) 
+        {
+            debug.append("Exception in saveStudentResults: ")
+                 .append(e).append("\n");
+            return false;
+        }
+    }
+
     
    /*  public double getSuiteSuccessRate(TestSuite suite) {
     return SuccessRate.getTestSuiteSuccessRate(suite);
