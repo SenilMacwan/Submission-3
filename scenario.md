@@ -117,7 +117,7 @@ Compare output with expected output
 
 Compiler or runtime errors are collected using the Error, Result, and FinalResult classes.
 
-Step 6: Store Results
+6. Store Results
 
 User Actions:
 
@@ -131,7 +131,7 @@ Results of the test suite execution are serialized and saved.
 
 UI confirms: "Results saved successfully".
 
-Step 7: Execute Test Suite on Resubmission Folder
+7. Execute Test Suite on Resubmission Folder
 
 User Actions:
 
@@ -149,7 +149,7 @@ User Actions:
  
  Results saved and displayed in the same UI format.
 
-Step 8: Reload Stored Results
+8. Reload Stored Results
 
 User Actions:
 
@@ -161,7 +161,7 @@ System Response:
 
 UI displays all results from the selected file in a read-only text area.
 
-Step 9: Compare Success Rates Between Two Submissions
+9. Compare Success Rates Between Two Submissions
 
 User Actions:
 
