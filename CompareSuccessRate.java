@@ -14,7 +14,9 @@ public class CompareSuccessRate
      * Compares two TestSuites by their success rate.
      * Returns a clean, readable message.
      */
-    public static String compare(TestSuite a, TestSuite b)
+    public static String compare(TestSuite a, String folderA,
+                                 TestSuite b, String folderB,
+                                 COORD coord, StringBuilder debug)
     {
         // Safety checks
         if (a == null || b == null)
