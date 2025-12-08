@@ -173,8 +173,22 @@ public class COORD {
                 return "No Java file found.";
             }
 
-            File codeFile = javaFiles[0];
-            String className = codeFile.getName().replace(".java", "");
+            File mainFile = null;
+String className = null;
+
+for (File f : javaFiles) {
+    String content = java.nio.file.Files.readString(f.toPath());
+    if (content.contains("public static void main(")) {
+        mainFile = f;
+        className = f.getName().replace(".java", "");
+        break;
+    }
+}
+
+if (mainFile == null) {
+    debug.append("Error: No file with main method.\n");
+    return "No file with main method.";
+}
 
             ExecuteTestSuite runner = new ExecuteTestSuite();
 
@@ -349,11 +363,26 @@ public class COORD {
                         continue;
                     }
 
-                    File codeFile = javaFiles[0];
-                    String className = codeFile.getName().replace(".java", "");
+                   File mainFile = null;
+String className = null;
+
+for (File f : javaFiles) {
+    String content = java.nio.file.Files.readString(f.toPath());
+    if (content.contains("public static void main(")) {
+        mainFile = f;
+        className = f.getName().replace(".java", "");
+        break;
+    }
+}
+
+if (mainFile == null) {
+    debug.append("No file with main() for ").append(studentName).append("\n");
+    perTestResult.put(tc.title, false);
+    continue;
+}
 
                     // Compile
-                    if (!runner.compileProgram(codeFile)) 
+                    if (!runner.compileProgram(mainFile)) 
                     {
                         debug.append("Compilation failed for ").append(studentName).append("\n");
                         perTestResult.put(tc.title, false);
