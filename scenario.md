@@ -1,9 +1,10 @@
-/************************************************************************
-* This scenario demonstrates all features of the Code Tester JavaFX application (Version 2), including multiple test case handling, multiple student programs, resubmissions, and success rate comparison
+/****************************************************************************************************************
+* This scenario demonstrates all features of the Code Tester JavaFX application (Version 2),
+* including multiple test case handling, multiple student programs, resubmissions, and success rate comparison
 *
 * @author: Sanjida Shakhayet
 * CS 2043 / Group 10
-********************************************************************/
+**********************************************************************************************************************/
 
 1. Start the Application
 
@@ -115,36 +116,65 @@ Compare output with expected output
 Compiler or runtime errors are collected using the Error, Result, and FinalResult classes.
 
 Step 6: Store Results
+
 User Actions:
-•	Click Store Results.
-•	Enter a filename (e.g., results_v1.ser) and confirm.
+
+Click Store Results.
+
+Enter a filename (e.g., results_v1.ser) and confirm.
+
 System Response:
-•	Results of the test suite execution are serialized and saved.
-•	UI confirms: "Results saved successfully".
+
+Results of the test suite execution are serialized and saved.
+
+UI confirms: "Results saved successfully".
+
 Step 7: Execute Test Suite on Resubmission Folder
+
 User Actions:
-•	Enter path to second folder containing resubmissions (e.g., ./StudentPrograms_v2).
-•	Click Confirm Root Folder for the new folder.
-•	Click Execute Test Suite.
-•	Store results as results_v2.ser.
-System Response:
-•	System executes all test cases on resubmitted programs.
-•	Results saved and displayed in the same UI format.
+
+ Enter path to second folder containing resubmissions (e.g., ./StudentPrograms_v2).
+ 
+ Click Confirm Root Folder for the new folder.
+ 
+ Click Execute Test Suite.
+ 
+ Store results as results_v2.ser.
+ 
+ System Response:
+ 
+ System executes all test cases on resubmitted programs.
+ 
+ Results saved and displayed in the same UI format.
 
 Step 8: Reload Stored Results
+
 User Actions:
-•	Click Reload Results.
-•	Select previously saved result file (e.g., results_v1.ser or results_v2.ser).
+
+Click Reload Results.
+
+Select previously saved result file (e.g., results_v1.ser or results_v2.ser).
+
 System Response:
-•	UI displays all results from the selected file in a read-only text area.
+
+UI displays all results from the selected file in a read-only text area.
 
 Step 9: Compare Success Rates Between Two Submissions
+
 User Actions:
-1.	Click Compare Success Rates.
-2.	Select two result files (e.g., results_v1.ser and results_v2.ser).
+
+Click Compare Success Rates.	
+
+Select two result files (e.g., results_v1.ser and results_v2.ser).
+
 System Response:
-•	UI displays a side-by-side comparison for each student:
-o	Number of test cases passed in each version / total number of test cases.
-o	Special messages if:
-	Student did not resubmit → "No Submission"
-	Program failed to compile → "Compile Error"
+
+UI displays a side-by-side comparison for each student:	
+
+Number of test cases passed in each version / total number of test cases.
+
+Special messages if:
+
+ Student did not resubmit → "No Submission"
+
+ Program failed to compile → "Compile Error"
