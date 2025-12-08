@@ -104,8 +104,7 @@ public class CodeTesterUI extends Application
         Button btnTraceTestCase = new Button("Trace Test Case");
         Button btnPrintTestCase = new Button("Print Test Case");
         Button btnRunTestSuite = new Button("Run Test Suite");
-        Button btnStoreResults = new Button("Store Results");
-        Button btnRunTestSuiteV2 = new Button("Run Test Suite \n on Different Folder");
+        Button btnRunTestSuiteV2 = new Button("Run Test Suite \non Different Folder");
         Button btnLoadResults = new Button("Load Results");
 
         applyCoolButtonStyle(btnCreateTestCase);
@@ -116,13 +115,8 @@ public class CodeTesterUI extends Application
         applyCoolButtonStyle(btnTraceTestCase);
         applyCoolButtonStyle(btnPrintTestCase);
         applyCoolButtonStyle(btnRunTestSuite);
-        applyCoolButtonStyle(btnStoreResults);
         applyCoolButtonStyle(btnRunTestSuiteV2);
         applyCoolButtonStyle(btnLoadResults);
-        
-        // Hide "Store Results" button until a suite is run successfully
-        btnStoreResults.setVisible(false);
-        btnStoreResults.setManaged(false);
 
 
         // ===================== BUTTON HANDLERS =====================
@@ -215,7 +209,7 @@ public class CodeTesterUI extends Application
             msgText.setText(COORD.printTC(titleTC));
         });
 
-        btnRunTestSuite.setOnAction(e -> {
+         btnRunTestSuite.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
             dialog.setHeaderText("Suite Name:");
             String suite = dialog.showAndWait().orElse("");
@@ -224,34 +218,25 @@ public class CodeTesterUI extends Application
             String folder = dialog.showAndWait().orElse("");
 
             StringBuilder debug = new StringBuilder();
-            lastResultsV1 = COORD.runTestSuiteOnFolder(suite, folder, debug);
+            ExecuteTestSuite runner = new ExecuteTestSuite();
+            runner.runSuite(suite, folder, debug);
+            
+            StringBuilder debug2 = new StringBuilder();
+            List<StudentResults> results = COORD.runTestSuiteOnFolder(suite, folder, debug2);
 
+            if (results != null && !results.isEmpty()) 
+            {
+                COORD.saveStudentResults(results, "results_v1.ser", debug2);
+            } 
+            else 
+            {
+                debug2.append("No results to save.\n");
+            }
+
+            // Append the saving info under the original output
+            //debug.append("\n").append(debug2.toString());
 
             Platform.runLater(() -> msgText.setText(debug.toString()));
-            
-            if (lastResultsV1 != null && !lastResultsV1.isEmpty()) 
-            {
-                btnStoreResults.setVisible(true);
-                btnStoreResults.setManaged(true);
-            }
-        });
-        
-        btnStoreResults.setOnAction(e -> {
-            // Make sure we actually have something to save
-            if (lastResultsV1 == null || lastResultsV1.isEmpty()) 
-            {
-                msgText.setText("No results to store. Please run a test suite first.");
-                return;
-            }
-
-            StringBuilder debug = new StringBuilder();
-
-            // Storing the results
-            COORD.saveStudentResults(lastResultsV1, "results_v1.ser", debug);
-            COORD.saveStudentResultsAsText(lastResultsV1, "results_v1.txt", debug);
-
-            // Show what happened in the UI
-            msgText.setText(debug.toString());
         });
 
         btnRunTestSuiteV2.setOnAction(e -> {
@@ -283,7 +268,6 @@ public class CodeTesterUI extends Application
             if (resultsV2 != null && !resultsV2.isEmpty()) 
             {
                 COORD.saveStudentResults(resultsV2, "results_v2.ser", debug);
-                COORD.saveStudentResultsAsText(resultsV2, "results_v2.txt", debug);
             }
 
             msgText.setText(debug.toString());
@@ -293,7 +277,7 @@ public class CodeTesterUI extends Application
             // Let user choose a .ser results file
             FileChooser chooser = new FileChooser();
             
-            chooser.setTitle("Select Results File (.ser)");
+            chooser.setTitle("Select Results File");
             chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Serialized Results (*.ser)", "*.ser"));
             
             File file = chooser.showOpenDialog(primaryStage);
@@ -342,8 +326,8 @@ public class CodeTesterUI extends Application
         buttonBox.getChildren().addAll(
                 btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite,
                 btnSaveTestCase, btnAddToSuite, btnTraceTestCase,
-                btnPrintTestCase, btnRunTestSuite, btnStoreResults, 
-                btnRunTestSuiteV2, btnLoadResults
+                btnPrintTestCase, btnRunTestSuite, btnRunTestSuiteV2, 
+                btnLoadResults
         );
 
         bottom.getChildren().addAll(msgBox, buttonBox);
