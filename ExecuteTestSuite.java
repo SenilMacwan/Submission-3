@@ -40,12 +40,27 @@ public class ExecuteTestSuite
                 continue;
             }
 
-            File codeFile = javaFiles[0];
-            String className = codeFile.getName().replace(".java", "");
+            // Find the file that contains main()
+File mainFile = null;
+String className = null;
+
+for (File f : javaFiles) {
+    String content = java.nio.file.Files.readString(f.toPath());
+    if (content.contains("public static void main(")) {
+        mainFile = f;
+        className = f.getName().replace(".java", "");
+        break;
+    }
+}
+
+if (mainFile == null) {
+    outputLog.append("No file with main method.\n");
+    continue;
+}
 
             outputLog.append("Found program: ").append(className).append("\n");
 
-            if (!compileProgram(codeFile)) {
+            if (!compileProgram(mainFile)) {
                 outputLog.append("Compilation failed for: ").append(className).append("\n");
                 continue;
             }
