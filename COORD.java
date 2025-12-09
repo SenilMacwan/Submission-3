@@ -1,14 +1,12 @@
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.FileInputStream;     
-import java.io.ObjectInputStream;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.List;
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
 
 public class COORD {
 
@@ -259,56 +257,7 @@ if (mainFile == null) {
             return false;
         }
     }
-    
-    // ============================================
-    // Save student results in a text file 
-    // ============================================
-    public static boolean saveStudentResultsAsText(List<StudentResults> results, String fileName, StringBuilder debug) 
-    {
-        try 
-        {
-            debug.append("Saving student results as text to file: ")
-                 .append(fileName).append("\n");
 
-            if (results == null || results.isEmpty()) 
-            {
-                debug.append("Error: No results to save as text.\n");
-                return false;
-            }
-
-            if (fileName == null || fileName.isEmpty()) 
-            {
-                debug.append("Error: Text file name is empty.\n");
-                return false;
-            }
-
-            try (PrintWriter out = new PrintWriter(new FileWriter(fileName))) 
-            {
-                // Header row
-                out.println("Student, TotalTests, PassedTests, SuccessRatePercent");
-
-                for (StudentResults sr : results) 
-                {
-                    int total = sr.getTotalTests();
-                    int passed = sr.getPassedTests();
-                    double rate = (total > 0) ? (passed * 100.0 / total) : 0.0;
-
-                    System.out.printf("%s,%d,%d,%.1f%n", sr.getStudentName(), total, passed, rate);
-                }
-            }
-
-            debug.append("Student results text file saved successfully.\n");
-            return true;
-
-        } 
-        catch (Exception e) 
-        {
-            debug.append("Exception in saveStudentResultsAsText: ")
-                 .append(e).append("\n");
-            return false;
-        }
-    }
-        
     // ============================================
     // Run TestSuite on a root folder of student programs
     // ============================================
@@ -381,6 +330,7 @@ if (mainFile == null) {
     continue;
 }
 
+
                     // Compile
                     if (!runner.compileProgram(mainFile)) 
                     {
@@ -411,7 +361,6 @@ if (mainFile == null) {
 
         return resultsList;
     }
-    
     // ============================================
     // Load previously saved student results (.ser)
     // ============================================
@@ -449,13 +398,46 @@ if (mainFile == null) {
         return results;
     }
 
+   public static String compareStudents(String suiteName, String student1Path, String student2Path) {
+    TestSuite ts = listOfTestSuite.search(suiteName);
 
-   /*  public double getSuiteSuccessRate(TestSuite suite) {
-    return SuccessRate.getTestSuiteSuccessRate(suite);
+    if (ts == null) {
+        return "Test Suite not found: " + suiteName;
+    }
+
+    // Calculate success rate for Student 1
+    SuccessRateCalculator.Result r1 =
+            SuccessRateCalculator.calculateForStudent(ts, student1Path);
+
+    // Calculate success rate for Student 2
+    SuccessRateCalculator.Result r2 =
+            SuccessRateCalculator.calculateForStudent(ts, student2Path);
+
+    // Build result output
+    StringBuilder sb = new StringBuilder();
+    sb.append("=== Success Rate Comparison ===\n");
+    sb.append("Suite: ").append(suiteName).append("\n\n");
+
+    sb.append("Student 1 Folder: ").append(student1Path).append("\n");
+    sb.append("Success Rate: ").append(r1.toString()).append("\n\n");
+
+    sb.append("Student 2 Folder: ").append(student2Path).append("\n");
+    sb.append("Success Rate: ").append(r2.toString()).append("\n\n");
+
+    // Comparison
+    double rate1 = (double) r1.passed / r1.total;
+    double rate2 = (double) r2.passed / r2.total;
+
+    if (rate1 > rate2) {
+        sb.append("Result: Student 1 performed better.");
+    } else if (rate2 > rate1) {
+        sb.append("Result: Student 2 performed better.");
+    } else {
+        sb.append("Result: Both students performed equally.");
+    }
+
+    return sb.toString();
 }
 
-/*public double getOverallSuccessRate() {
-    return SuccessRate.getOverallSuccessRate(allSuites);
-}*/
 
 }

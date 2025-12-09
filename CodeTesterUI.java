@@ -7,23 +7,22 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextInputDialog;
-import javafx.stage.DirectoryChooser;
-import java.io.File;
-import javafx.stage.FileChooser;
-import java.util.List;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class CodeTesterUI extends Application 
-{
-    // storing results from the last execution
-    private List<StudentResults> lastResultsV1;
+import java.io.File;
+import java.util.List;
+
+public class CodeTesterUI extends Application {
+
+    private java.util.List<StudentResults> lastResultsV1;
     @Override
-    public void start(Stage primaryStage) 
-    {
+    public void start(Stage primaryStage) {
 
         BorderPane root = new BorderPane();
         root.setBackground(new Background(
@@ -67,12 +66,12 @@ public class CodeTesterUI extends Application
         Label msgText = new Label("Click a button...");
         msgText.setFont(Font.font("Arial", 18));
         msgText.setTextFill(Color.rgb(40, 40, 70));
-        msgText.setWrapText(true);  // KEY FIX — enables height expansion
+        msgText.setWrapText(true);
 
         VBox msgContent = new VBox(msgText);
         msgContent.setAlignment(Pos.TOP_LEFT);
         msgContent.setPadding(new Insets(20));
-        msgContent.setPrefWidth(520);  // REQUIRED for scrolling + wrapping
+        msgContent.setPrefWidth(520);
 
         ScrollPane msgBox = new ScrollPane(msgContent);
         msgBox.setFitToWidth(true);
@@ -96,17 +95,23 @@ public class CodeTesterUI extends Application
         shadow.setColor(Color.gray(0.6, 0.35));
         buttonBox.setEffect(shadow);
 
-        Button btnCreateTestCase = new Button("Create Test Case");
-        Button btnLoadTestCase = new Button("Load Test Case");
-        Button btnCreateTestSuite = new Button("Create Test Suite");
-        Button btnSaveTestCase = new Button("Save Test Case");
-        Button btnAddToSuite = new Button("Add Test Case to Suite");
-        Button btnTraceTestCase = new Button("Trace Test Case");
-        Button btnPrintTestCase = new Button("Print Test Case");
-        Button btnRunTestSuite = new Button("Run Test Suite");
-        Button btnRunTestSuiteV2 = new Button("Run Test Suite \non Different Folder");
-        Button btnLoadResults = new Button("Load Results");
+        Button btnCreateTestCase     = new Button("Create Test Case");
+        Button btnLoadTestCase       = new Button("Load Test Case");
+        Button btnCreateTestSuite    = new Button("Create Test Suite");
+        Button btnSaveTestCase       = new Button("Save Test Case");
+        Button btnAddToSuite         = new Button("Add Test Case to Suite");
+        Button btnTraceTestCase      = new Button("Trace Test Case");
+        Button btnPrintTestCase      = new Button("Print Test Case");
+        Button btnRunTestSuite       = new Button("Run Test Suite");
+        Button btnRunTestSuiteV2     = new Button("Run Test Suite\non Different Folder");
+        Button btnLoadResults        = new Button("Load Results");
+        Button btnCompareSuccess     = new Button("Compare Success Rate");
+        Button btnSingleSuccess      = new Button("Student Success Rate");
+        Button btnSaveLatestResults = new Button("Save Results");
+        applyCoolButtonStyle(btnSaveLatestResults);
+        btnSaveLatestResults.setDisable(true);   // disabled until something runs
 
+        
         applyCoolButtonStyle(btnCreateTestCase);
         applyCoolButtonStyle(btnLoadTestCase);
         applyCoolButtonStyle(btnCreateTestSuite);
@@ -117,7 +122,8 @@ public class CodeTesterUI extends Application
         applyCoolButtonStyle(btnRunTestSuite);
         applyCoolButtonStyle(btnRunTestSuiteV2);
         applyCoolButtonStyle(btnLoadResults);
-
+        applyCoolButtonStyle(btnCompareSuccess);
+        applyCoolButtonStyle(btnSingleSuccess);
 
         // ===================== BUTTON HANDLERS =====================
 
@@ -209,7 +215,8 @@ public class CodeTesterUI extends Application
             msgText.setText(COORD.printTC(titleTC));
         });
 
-         btnRunTestSuite.setOnAction(e -> {
+        // Simple Run Test Suite + save V1 results
+        btnRunTestSuite.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
             dialog.setHeaderText("Suite Name:");
             String suite = dialog.showAndWait().orElse("");
@@ -217,118 +224,187 @@ public class CodeTesterUI extends Application
             dialog.setHeaderText("Root Folder Path:");
             String folder = dialog.showAndWait().orElse("");
 
+            // This is the log that ExecuteTestSuite writes into
             StringBuilder debug = new StringBuilder();
             ExecuteTestSuite runner = new ExecuteTestSuite();
-            runner.runSuite(suite, folder, debug);
-            
-            StringBuilder debug2 = new StringBuilder();
-            List<StudentResults> results = COORD.runTestSuiteOnFolder(suite, folder, debug2);
-
-            if (results != null && !results.isEmpty()) 
-            {
-                COORD.saveStudentResults(results, "results_v1.ser", debug2);
-            } 
-            else 
-            {
-                debug2.append("No results to save.\n");
+            try {
+                runner.runSuite(suite, folder, debug);
+            } catch (java.io.IOException ioe) {
+                ioe.printStackTrace();
+                debug.append("\nIOException while running suite.\n");
             }
 
-            // Append the saving info under the original output
-            //debug.append("\n").append(debug2.toString());
+            // Optional: also compute per-student results for saving
+            StringBuilder debug2 = new StringBuilder();
+            List<StudentResults> results =
+                    COORD.runTestSuiteOnFolder(suite, folder, debug2);
+
+             // Store for "Save Results" button
+            lastResultsV1 = results;
+
+            if (results != null && !results.isEmpty()) {
+                btnSaveLatestResults.setDisable(false);
+                // if you want to show debug2 as well, uncomment:
+                // debug.append("\n").append(debug2);
+            } else {
+                btnSaveLatestResults.setDisable(true);
+                debug.append("\nNo results to save.\n");
+            }
 
             Platform.runLater(() -> msgText.setText(debug.toString()));
         });
 
+        // Run Test Suite on different folder (V2) + save V2 results
         btnRunTestSuiteV2.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
             dialog.setHeaderText("Suite Name:");
             String suite = dialog.showAndWait().orElse("");
-            
-            if (suite == null || suite.trim().isEmpty()) 
-            {
+
+            if (suite == null || suite.trim().isEmpty()) {
                 msgText.setText("No suite name provided.");
                 return;
             }
 
-            // Letting the user choose the root folder 
             DirectoryChooser chooser = new DirectoryChooser();
-            chooser.setTitle("Select Different Root Folder ");
+            chooser.setTitle("Select Different Root Folder");
             File folder = chooser.showDialog(primaryStage);
 
-            if (folder == null) 
-            {
+            if (folder == null) {
                 msgText.setText("No folder selected.");
                 return;
             }
 
             StringBuilder debug = new StringBuilder();
 
-            List<StudentResults> resultsV2 = COORD.runTestSuiteOnFolder( suite, folder.getAbsolutePath(), debug);
-            
-            if (resultsV2 != null && !resultsV2.isEmpty()) 
-            {
+            List<StudentResults> resultsV2 =
+                    COORD.runTestSuiteOnFolder(suite, folder.getAbsolutePath(), debug);
+
+            if (resultsV2 != null && !resultsV2.isEmpty()) {
                 COORD.saveStudentResults(resultsV2, "results_v2.ser", debug);
+            } else {
+                debug.append("No results to save.\n");
             }
 
             msgText.setText(debug.toString());
-        });    
-        
+        });
+
+        // Load serialized results and display summary
         btnLoadResults.setOnAction(e -> {
-            // Let user choose a .ser results file
             FileChooser chooser = new FileChooser();
-            
             chooser.setTitle("Select Results File");
-            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Serialized Results (*.ser)", "*.ser"));
-            
+            chooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Serialized Results (.ser)", "*.ser")
+            );
+
             File file = chooser.showOpenDialog(primaryStage);
 
-            if (file == null) 
-            {
+            if (file == null) {
                 msgText.setText("No results file selected.");
                 return;
             }
 
             StringBuilder debug = new StringBuilder();
+            List<StudentResults> results =
+                    COORD.loadStudentResults(file.getAbsolutePath(), debug);
 
-            // Load results from file
-            List<StudentResults> results = COORD.loadStudentResults(file.getAbsolutePath(), debug);
-
-            // Build a human-readable summary
             StringBuilder out = new StringBuilder();
             out.append(debug).append("\n");
 
-            if (results == null || results.isEmpty()) 
-            {
+            if (results == null || results.isEmpty()) {
                 out.append("No student results found in file.");
-            } 
-            else 
-            {
+            } else {
                 out.append("Loaded results for ")
-                   .append(results.size()).append(" students:\n\n");
+                        .append(results.size()).append(" students:\n\n");
 
-                for (StudentResults sr : results) 
-                {
+                for (StudentResults sr : results) {
                     int total = sr.getTotalTests();
                     int passed = sr.getPassedTests();
                     double rate = (total > 0) ? (passed * 100.0 / total) : 0.0;
 
                     out.append("Student: ").append(sr.getStudentName()).append("\n");
                     out.append("Passed: ").append(passed)
-                       .append(" / ").append(total)
-                       .append(String.format(" (%.1f%%)", rate)).append("\n\n");
+                            .append(" / ").append(total)
+                            .append(String.format(" (%.1f%%)", rate)).append("\n\n");
                 }
             }
 
             msgText.setText(out.toString());
         });
 
+        // Compare success rate between two student folders
+        btnCompareSuccess.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Enter Test Suite Name:");
+            String suiteName = dialog.showAndWait().orElse("");
+
+            dialog.setHeaderText("Enter Student 1 Folder Path:");
+            String student1 = dialog.showAndWait().orElse("");
+
+            dialog.setHeaderText("Enter Student 2 Folder Path:");
+            String student2 = dialog.showAndWait().orElse("");
+
+            String result = COORD.compareStudents(suiteName, student1, student2);
+
+            msgText.setText(result);
+        });
+        
+        btnSingleSuccess.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Enter Test Suite Name:");
+            String suiteName = dialog.showAndWait().orElse("");
+
+            dialog.setHeaderText("Enter Student Folder Path:");
+            String studentFolder = dialog.showAndWait().orElse("");
+
+            StringBuilder debug = new StringBuilder();
+
+            // Run test suite on this one folder only
+            List<StudentResults> results =
+                    COORD.runTestSuiteOnFolder(suiteName, studentFolder, debug);
+
+            if (results == null || results.isEmpty()) {
+                msgText.setText("No results found.\n" + debug);
+                return;
+            }
+
+            StudentResults sr = results.get(0);
+
+            int total = sr.getTotalTests();
+            int passed = sr.getPassedTests();
+            double rate = (total == 0) ? 0 : (passed * 100.0 / total);
+
+            String out =
+                    "Student: " + sr.getStudentName() + "\n" +
+                    "Passed: " + passed + " / " + total + "\n" +
+                    String.format("Success Rate: %.1f%%", rate);
+
+            msgText.setText(out);
+        });
+        
+        btnSaveLatestResults.setOnAction(e -> {
+            StringBuilder dbg = new StringBuilder();
+
+            if (lastResultsV1 == null || lastResultsV1.isEmpty()) {
+                msgText.setText("No results available to save.");
+                return;
+            }
+
+            COORD.saveStudentResults(lastResultsV1, "results_v1.ser", dbg);
+            msgText.setText("Saved results to results_v1.ser\n" + dbg);
+        });
+
+
+
         // Add buttons
         buttonBox.getChildren().addAll(
-                btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite,
-                btnSaveTestCase, btnAddToSuite, btnTraceTestCase,
-                btnPrintTestCase, btnRunTestSuite, btnRunTestSuiteV2, 
-                btnLoadResults
+            btnCreateTestCase, btnLoadTestCase, btnCreateTestSuite,
+            btnSaveTestCase, btnAddToSuite, btnTraceTestCase,
+            btnPrintTestCase, btnRunTestSuite, btnRunTestSuiteV2,
+            btnLoadResults, btnCompareSuccess, btnSingleSuccess,
+            btnSaveLatestResults
         );
+
+
 
         bottom.getChildren().addAll(msgBox, buttonBox);
         HBox.setHgrow(msgBox, Priority.ALWAYS);
@@ -351,11 +427,11 @@ public class CodeTesterUI extends Application
         );
         b.setOnMouseEntered(e -> b.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ffffff, #d8e2ff);" +
-                "-fx-border-color: #666;"
+                        "-fx-border-color: #666;"
         ));
         b.setOnMouseExited(e -> b.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #f8f8f8, #e0e0e0);" +
-                "-fx-border-color: #999;"
+                        "-fx-border-color: #999;"
         ));
     }
 
