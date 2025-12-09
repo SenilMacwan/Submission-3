@@ -192,8 +192,8 @@ if (mainFile == null) {
 
             ExecuteTestSuite runner = new ExecuteTestSuite();
 
-            debug.append("Compiling ").append(codeFile.getName()).append("\n");
-            if (!runner.compileProgram(codeFile)) {
+            debug.append("Compiling ").append(mainFile.getName()).append("\n");
+            if (!runner.compileProgram(mainFile)) {
                 debug.append("Compilation failed.\n");
                 return "Compilation failed.";
             }
