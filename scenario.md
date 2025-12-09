@@ -68,7 +68,7 @@ System Response:
 
 The loaded test case is inserted into the TestSuite.
 
-🔸 Important:
+
 The TestSuite must contain at least one test case before executing the suite.
 
  4. Set the Root Folder
